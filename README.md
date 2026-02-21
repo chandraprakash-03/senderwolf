@@ -7,15 +7,15 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
-## 🆕 What's New in v3.3.0
+## 🆕 What's New in v3.4.0
 
-- 🚀 **Built-in Connection Pooling** - 50-80% faster bulk email sending
-- ⚡ **High Performance** - Efficient connection reuse and management
-- 🔄 **Automatic Pool Management** - Smart connection rotation and cleanup
-- 📊 **Pool Monitoring** - Real-time statistics with `getPoolStats()`
-- 🛡️ **Rate Limiting** - Built-in protection against provider limits
-- 📧 **Enhanced Template System** - 4 built-in templates with advanced features
-- 🔧 **CLI Tools** - Complete command-line interface for email sending and templates
+- 🔄 **Retry Logic with Exponential Backoff** - Automatic retry for transient SMTP failures
+- ⚡ **Smart Error Classification** - Never retries auth errors, only transient failures
+- 📡 **Structured Event System** - Lifecycle hooks for `sending`, `sent`, `failed`, `retrying`
+- 🎯 **Event Listeners on Mailer** - `mailer.on()`, `mailer.off()`, `mailer.once()` with chaining
+- 🛡️ **Connection Pooling Fix** - Fixed critical bug where pooling was silently disabled
+- 📊 **Attempt Tracking** - `sendEmail()` now returns `attempts` count in results
+- 🔧 **Pool Schema Validation** - Proper Zod validation for pool configuration
 - 🛡️ **Zero Breaking Changes** - Full backward compatibility
 
 ## ✨ Key Features
@@ -24,6 +24,8 @@
 - ✅ **High-performance connection pooling** - 50-80% faster bulk email sending
 - ✅ **Auto-provider detection** - Just provide your email, we handle the rest
 - ✅ **Built-in provider presets** - 13+ popular email services ready to use
+- ✅ **Retry with exponential backoff** - Automatic retry for transient SMTP failures
+- ✅ **Event system & hooks** - Lifecycle events for sending, sent, failed, retrying
 - ✅ **Zero SMTP dependencies** - Pure Node.js implementation
 - ✅ **Modern authentication** - OAuth2, XOAUTH2, and traditional methods
 - ✅ **Extensible architecture** - Add any SMTP provider instantly
@@ -703,22 +705,165 @@ await closeAllPools();
 - 🛡️ **Built-in rate limiting** to avoid provider limits
 - 🔄 **Automatic connection rotation** for reliability
 
-**Performance Comparison:**
+### **🔄 Retry Logic with Exponential Backoff**
+
+Senderwolf automatically retries failed email sends on transient errors like connection timeouts and SMTP 4xx responses — with exponential backoff and jitter to prevent thundering herd:
 
 ```js
-// Before: Sequential sending (slower)
-for (const recipient of recipients) {
-	await sendEmail({
-		/* config */
-	}); // New connection each time
-}
+import { sendEmail } from "senderwolf";
 
-// Now: Connection pooling (50-80% faster!)
-const mailer = createMailer({
-	/* config */
+const result = await sendEmail({
+	smtp: {
+		provider: "gmail",
+		auth: { user: "your@gmail.com", pass: "app-password" },
+	},
+	mail: {
+		to: "recipient@example.com",
+		subject: "Important Update",
+		html: "<h1>Hello!</h1>",
+	},
+	retry: {
+		maxRetries: 3,         // Retry up to 3 times (default: 0 = disabled)
+		initialDelay: 1000,    // 1s before first retry (default: 1000)
+		backoffMultiplier: 2,  // Double the delay each retry (default: 2)
+		maxDelay: 30000,       // Cap delay at 30s (default: 30000)
+	},
 });
-const results = await mailer.sendBulk(recipients, subject, content);
+
+console.log(`Delivered in ${result.attempts} attempt(s)`);
 ```
+
+**Retry with createMailer** (applies to all sends):
+
+```js
+const mailer = createMailer({
+	smtp: {
+		provider: "gmail",
+		auth: { user: "your@gmail.com", pass: "app-password" },
+	},
+	retry: { maxRetries: 2 }, // Default retry for all sends
+});
+
+// Override per-send
+await mailer.send({
+	to: "user@example.com",
+	subject: "Critical Alert",
+	html: "<p>Alert!</p>",
+	retry: { maxRetries: 5 }, // Override with more retries
+});
+```
+
+**Custom retry logic:**
+
+```js
+await sendEmail({
+	// ...smtp & mail config
+	retry: {
+		maxRetries: 3,
+		retryableErrors: ["ECONNRESET", "ETIMEDOUT", "ECONNREFUSED"], // Custom error codes
+	},
+});
+```
+
+**Standalone retry utility:**
+
+```js
+import { withRetry } from "senderwolf";
+
+// Wrap any async function with retry
+const { result, attempts } = await withRetry(
+	async (attempt) => {
+		console.log(`Attempt ${attempt}...`);
+		return await someAsyncOperation();
+	},
+	{ maxRetries: 3, initialDelay: 500 }
+);
+```
+
+**Smart error classification:**
+
+- ✅ **Retries:** `ECONNRESET`, `ETIMEDOUT`, `ECONNREFUSED`, `EPIPE`, `EHOSTUNREACH`, SMTP 4xx, DNS failures
+- ❌ **Never retries:** Authentication errors, invalid mailbox, relay denied, SMTP 5xx
+
+**Retry Configuration Options:**
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `maxRetries` | `0` (disabled) | Maximum retry attempts |
+| `initialDelay` | `1000` | Milliseconds before first retry |
+| `backoffMultiplier` | `2` | Delay multiplier per retry |
+| `maxDelay` | `30000` | Maximum delay cap in ms |
+| `retryableErrors` | See above | Error codes to retry on |
+
+---
+
+### **📡 Event System & Lifecycle Hooks**
+
+Senderwolf emits events at every stage of the email lifecycle — perfect for logging, monitoring, analytics, and error tracking:
+
+```js
+import { on, off, once, removeAllListeners } from "senderwolf";
+
+// Listen to lifecycle events
+on("sending", ({ to, subject, attempt }) => {
+	console.log(`📤 Sending to ${to} (attempt ${attempt})...`);
+});
+
+on("sent", ({ messageId, to, elapsed, attempt }) => {
+	console.log(`✅ Delivered ${messageId} to ${to} in ${elapsed}ms`);
+});
+
+on("failed", ({ error, to, attempt, willRetry }) => {
+	console.warn(`❌ Failed to send to ${to}: ${error}`);
+	if (willRetry) console.log("  ↻ Will retry...");
+});
+
+on("retrying", ({ to, attempt, delay, error }) => {
+	console.log(`🔄 Retrying to ${to} (attempt ${attempt}) in ${delay}ms`);
+});
+```
+
+**Events on mailer instances** (with method chaining):
+
+```js
+const mailer = createMailer({ /* config */ });
+
+mailer
+	.on("sent", ({ messageId, elapsed }) => {
+		console.log(`Delivered in ${elapsed}ms`);
+	})
+	.on("failed", ({ error }) => {
+		console.error(`Send failed: ${error}`);
+	});
+
+await mailer.sendHtml("user@example.com", "Subject", "<h1>Hi!</h1>");
+```
+
+**One-time listeners:**
+
+```js
+// Listen once — automatically removed after first event
+once("sent", ({ messageId }) => {
+	console.log(`First email sent: ${messageId}`);
+});
+
+// Remove specific listener
+off("sent", myListener);
+
+// Remove all listeners for an event
+removeAllListeners("failed");
+```
+
+**Event Payloads:**
+
+| Event | Payload | When |
+|-------|---------|------|
+| `sending` | `{ to, subject, attempt, timestamp }` | Before each send attempt |
+| `sent` | `{ messageId, to, subject, elapsed, attempt, timestamp }` | After successful delivery |
+| `failed` | `{ error, to, subject, attempt, willRetry, timestamp }` | After a failed attempt |
+| `retrying` | `{ to, subject, attempt, maxRetries, delay, error, timestamp }` | Before a retry delay |
+
+---
 
 ### **Bulk Email Sending**
 
@@ -809,6 +954,8 @@ MIT © 2025 [Chandraprakash](https://github.com/Chandraprakash-03)
 
 - **🚀 Faster development** - Less time configuring, more time building
 - **⚡ High performance** - Built-in connection pooling for 50-80% faster bulk sending
+- **🔄 Resilient** - Automatic retry with exponential backoff for transient failures
+- **📡 Observable** - Structured event system for logging, monitoring, and analytics
 - **🧠 Lower cognitive load** - Intuitive API that just makes sense
 - **🔮 Future-proof** - Easily add any new email provider
 - **🪶 Lightweight** - Zero unnecessary dependencies

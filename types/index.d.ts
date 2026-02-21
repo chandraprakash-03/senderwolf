@@ -140,6 +140,73 @@ export interface PoolStats {
 }
 
 // ============================================================================
+// Retry Types
+// ============================================================================
+
+export interface RetryConfig {
+	/** Maximum number of retry attempts (default: 0 — disabled) */
+	maxRetries?: number;
+	/** Initial delay in ms before first retry (default: 1000) */
+	initialDelay?: number;
+	/** Multiplier applied to delay after each retry (default: 2) */
+	backoffMultiplier?: number;
+	/** Maximum delay cap in ms (default: 30000) */
+	maxDelay?: number;
+	/** Error codes that are retryable (default: ECONNRESET, ETIMEDOUT, etc.) */
+	retryableErrors?: string[];
+	/** Custom function to determine if an error should be retried */
+	shouldRetry?: (error: Error) => boolean;
+}
+
+// ============================================================================
+// Event Types
+// ============================================================================
+
+export interface SendingEvent {
+	to: EmailRecipients;
+	subject: string;
+	attempt: number;
+	timestamp: number;
+}
+
+export interface SentEvent {
+	messageId: string;
+	to: EmailRecipients;
+	subject: string;
+	elapsed: number;
+	attempt: number;
+	timestamp: number;
+}
+
+export interface FailedEvent {
+	error: string;
+	to: EmailRecipients;
+	subject: string;
+	attempt: number;
+	willRetry: boolean;
+	timestamp: number;
+}
+
+export interface RetryingEvent {
+	to: EmailRecipients;
+	subject: string;
+	attempt: number;
+	maxRetries: number;
+	delay: number;
+	error: string;
+	timestamp: number;
+}
+
+export type SenderwolfEventMap = {
+	sending: SendingEvent;
+	sent: SentEvent;
+	failed: FailedEvent;
+	retrying: RetryingEvent;
+};
+
+export type SenderwolfEventName = keyof SenderwolfEventMap;
+
+// ============================================================================
 // SMTP Configuration Types
 // ============================================================================
 
@@ -220,6 +287,8 @@ export interface MailConfig {
 export interface SendEmailConfig {
 	smtp?: SMTPConfig;
 	mail: MailConfig;
+	/** Retry configuration for transient failures */
+	retry?: RetryConfig;
 }
 
 export interface MailerDefaults {
@@ -233,6 +302,8 @@ export interface MailerDefaults {
 export interface CreateMailerConfig {
 	smtp: SMTPConfig;
 	defaults?: MailerDefaults;
+	/** Default retry configuration for all sends */
+	retry?: RetryConfig;
 }
 
 // ============================================================================
@@ -243,6 +314,8 @@ export interface SendEmailResult {
 	success: boolean;
 	messageId?: string;
 	error?: string;
+	/** Number of attempts made (1 = no retries) */
+	attempts?: number;
 }
 
 export interface BulkSendResult {
@@ -398,6 +471,30 @@ export interface Mailer {
 	 * Get connection pool statistics
 	 */
 	getStats(): Promise<Record<string, PoolStats>>;
+
+	/**
+	 * Subscribe to email lifecycle events
+	 */
+	on<E extends SenderwolfEventName>(
+		event: E,
+		listener: (data: SenderwolfEventMap[E]) => void
+	): Mailer;
+
+	/**
+	 * Unsubscribe from email lifecycle events
+	 */
+	off<E extends SenderwolfEventName>(
+		event: E,
+		listener: (data: SenderwolfEventMap[E]) => void
+	): Mailer;
+
+	/**
+	 * Subscribe to a single occurrence of an event
+	 */
+	once<E extends SenderwolfEventName>(
+		event: E,
+		listener: (data: SenderwolfEventMap[E]) => void
+	): Mailer;
 }
 
 // ============================================================================
@@ -534,6 +631,62 @@ export function closeAllPools(): Promise<void>;
  * Get statistics for all connection pools
  */
 export function getPoolStats(): Record<string, PoolStats>;
+
+// ============================================================================
+// Event Functions
+// ============================================================================
+
+/**
+ * Subscribe to email lifecycle events
+ */
+export function on<E extends SenderwolfEventName>(
+	event: E,
+	listener: (data: SenderwolfEventMap[E]) => void
+): void;
+
+/**
+ * Unsubscribe from email lifecycle events
+ */
+export function off<E extends SenderwolfEventName>(
+	event: E,
+	listener: (data: SenderwolfEventMap[E]) => void
+): void;
+
+/**
+ * Subscribe to a single occurrence of an event
+ */
+export function once<E extends SenderwolfEventName>(
+	event: E,
+	listener: (data: SenderwolfEventMap[E]) => void
+): void;
+
+/**
+ * Remove all event listeners
+ */
+export function removeAllListeners(event?: SenderwolfEventName): void;
+
+/**
+ * The global event emitter instance
+ */
+export const senderwolfEvents: import('events').EventEmitter;
+
+// ============================================================================
+// Retry Functions
+// ============================================================================
+
+/**
+ * Wrap an async function with retry logic and exponential backoff
+ */
+export function withRetry<T>(
+	fn: (attempt: number) => Promise<T>,
+	options?: RetryConfig,
+	callbacks?: { onRetry?: (info: { attempt: number; maxRetries: number; delay: number; error: string }) => void }
+): Promise<{ result: T; attempts: number }>;
+
+/**
+ * Default retry configuration options
+ */
+export const DEFAULT_RETRY_OPTIONS: Required<Omit<RetryConfig, 'shouldRetry' | 'retryableErrors'>> & { retryableErrors: string[] };
 
 // ============================================================================
 // Template Management Functions
@@ -693,6 +846,13 @@ declare const senderwolf: {
 	TemplateManager: typeof TemplateManager;
 	SMTP_PROVIDERS: typeof SMTP_PROVIDERS;
 	BUILTIN_TEMPLATES: typeof BUILTIN_TEMPLATES;
+	on: typeof on;
+	off: typeof off;
+	once: typeof once;
+	removeAllListeners: typeof removeAllListeners;
+	senderwolfEvents: typeof senderwolfEvents;
+	withRetry: typeof withRetry;
+	DEFAULT_RETRY_OPTIONS: typeof DEFAULT_RETRY_OPTIONS;
 };
 
 export default senderwolf;

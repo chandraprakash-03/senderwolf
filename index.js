@@ -42,3 +42,15 @@ export {
     TemplateManager,
     BUILTIN_TEMPLATES
 } from './lib/templates.js';
+
+// Event system
+export {
+    on,
+    off,
+    once,
+    removeAllListeners,
+    senderwolfEvents
+} from './lib/events.js';
+
+// Retry utilities
+export { withRetry, DEFAULT_RETRY_OPTIONS } from './lib/retry.js';
