@@ -90,6 +90,38 @@ export interface XOAuth2Auth {
 export type AuthConfig = BasicAuth | OAuth2Auth | XOAuth2Auth;
 
 // ============================================================================
+// DKIM Signing Types
+// ============================================================================
+
+export interface DKIMConfig {
+	/**
+	 * The domain the email is sent from (d= tag).
+	 * Example: 'example.com'
+	 */
+	domainName: string;
+	/**
+	 * DNS selector for the public key lookup (s= tag).
+	 * Example: 'mail' → looks up TXT record at mail._domainkey.example.com
+	 */
+	keySelector: string;
+	/**
+	 * RSA private key in PEM format, or an absolute filesystem path to a PEM file.
+	 * Generated with: openssl genrsa -out private.pem 2048
+	 */
+	privateKey: string;
+	/**
+	 * List of header field names to include in the DKIM signature.
+	 * Defaults to: ['from','to','subject','date','message-id','mime-version','content-type','cc']
+	 */
+	headerFields?: string[];
+	/**
+	 * Hashing algorithm. Currently only 'sha256' is supported (rsa-sha256).
+	 * @default 'sha256'
+	 */
+	hashAlgo?: 'sha256';
+}
+
+// ============================================================================
 // Attachment Types
 // ============================================================================
 
@@ -239,6 +271,12 @@ export interface SMTPConfig {
 	pool?: PoolConfig;
 	/** Use connection pooling (default: true for createMailer) */
 	usePool?: boolean;
+	/**
+	 * DKIM signing configuration.
+	 * When provided, outgoing emails will be signed with the RSA private key
+	 * using rsa-sha256 and relaxed/relaxed canonicalization (RFC 6376).
+	 */
+	dkim?: DKIMConfig;
 }
 
 // ============================================================================
@@ -689,6 +727,118 @@ export function withRetry<T>(
 export const DEFAULT_RETRY_OPTIONS: Required<Omit<RetryConfig, 'shouldRetry' | 'retryableErrors'>> & { retryableErrors: string[] };
 
 // ============================================================================
+// HTML to Text Utility
+// ============================================================================
+
+/**
+ * Convert HTML string to plain text (zero-dependency)
+ */
+export function htmlToText(html: string): string;
+
+// ============================================================================
+// DKIM Utility Functions
+// ============================================================================
+
+/**
+ * Sign a raw email message string with DKIM.
+ *
+ * This is a low-level utility exposed for advanced use cases.
+ * In normal usage, simply pass `dkim` inside `smtp` config to sendEmail() or createMailer().
+ *
+ * @param message - Full raw email message (headers + \r\n\r\n + body), WITHOUT the "\r\n.\r\n" DATA terminator
+ * @param dkimConfig - DKIM signing configuration
+ * @returns The message with the `DKIM-Signature` header prepended
+ */
+export function signMessage(message: string, dkimConfig: DKIMConfig): string;
+
+/**
+ * Validate a DKIM config object.
+ * Throws a descriptive Error if the config is missing required fields.
+ * Returns true if the config is valid.
+ */
+export function validateDKIMConfig(dkim: DKIMConfig): true;
+
+// ============================================================================
+// Custom Error Classes
+// ============================================================================
+
+/**
+ * Base error class for all Senderwolf errors
+ */
+export class SenderwolfError extends Error {
+	name: 'SenderwolfError';
+	code: string;
+	constructor(message: string, code?: string);
+}
+
+/**
+ * Connection-related errors (timeouts, socket failures, TLS issues)
+ */
+export class ConnectionError extends SenderwolfError {
+	name: 'ConnectionError';
+	constructor(message: string);
+}
+
+/**
+ * Authentication errors (wrong credentials, unsupported auth method)
+ */
+export class AuthenticationError extends SenderwolfError {
+	name: 'AuthenticationError';
+	constructor(message: string);
+}
+
+/**
+ * SMTP protocol-level errors (command rejections, send failures)
+ */
+export class SMTPError extends SenderwolfError {
+	name: 'SMTPError';
+	smtpResponse: string | null;
+	responseCode: number | null;
+	constructor(message: string, smtpResponse?: string, responseCode?: number);
+}
+
+/**
+ * Validation errors (schema validation failures)
+ */
+export class ValidationError extends SenderwolfError {
+	name: 'ValidationError';
+	errors: any[];
+	constructor(message: string, errors?: any[]);
+}
+
+/**
+ * Template-related errors (missing templates, invalid config)
+ */
+export class TemplateError extends SenderwolfError {
+	name: 'TemplateError';
+	constructor(message: string);
+}
+
+/**
+ * Provider-related errors (missing/invalid provider config)
+ */
+export class ProviderError extends SenderwolfError {
+	name: 'ProviderError';
+	constructor(message: string);
+}
+
+/**
+ * Connection pool errors (pool closed, connection expired)
+ */
+export class PoolError extends SenderwolfError {
+	name: 'PoolError';
+	constructor(message: string);
+}
+
+/**
+ * Attachment-related errors (unsupported type, missing content)
+ */
+export class AttachmentError extends SenderwolfError {
+	name: 'AttachmentError';
+	constructor(message: string);
+}
+
+// ============================================================================
 // Template Management Functions
 // ============================================================================
 
@@ -853,6 +1003,16 @@ declare const senderwolf: {
 	senderwolfEvents: typeof senderwolfEvents;
 	withRetry: typeof withRetry;
 	DEFAULT_RETRY_OPTIONS: typeof DEFAULT_RETRY_OPTIONS;
+	htmlToText: typeof htmlToText;
+	SenderwolfError: typeof SenderwolfError;
+	ConnectionError: typeof ConnectionError;
+	AuthenticationError: typeof AuthenticationError;
+	SMTPError: typeof SMTPError;
+	ValidationError: typeof ValidationError;
+	TemplateError: typeof TemplateError;
+	ProviderError: typeof ProviderError;
+	PoolError: typeof PoolError;
+	AttachmentError: typeof AttachmentError;
 };
 
 export default senderwolf;

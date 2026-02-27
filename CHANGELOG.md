@@ -2,6 +2,34 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [3.5.0] - 2026-02-27
+
+### ✨ What's New
+
+- **🔑 DKIM Email Signing** - RFC 6376-compliant DKIM signing using Node.js built-in `crypto` — zero new dependencies
+  - `rsa-sha256` algorithm with `relaxed/relaxed` canonicalization (most compatible)
+  - Works with direct sends, connection pool, and `createMailer` — all sign automatically
+  - Accepts private key as PEM string **or** as an absolute file path
+  - Fully configurable signed headers via `headerFields`
+- **🔐 Low-level DKIM utilities** — `signMessage()` and `validateDKIMConfig()` exported for advanced use cases
+- **🔷 TypeScript** — `DKIMConfig` interface added; `dkim?` field added to `SMTPConfig`
+
+### 🆕 New API
+
+- `smtp.dkim.domainName` - Signing domain (`d=` tag)
+- `smtp.dkim.keySelector` - DNS selector (`s=` tag)
+- `smtp.dkim.privateKey` - RSA private key PEM string or file path
+- `smtp.dkim.headerFields` - Custom header list to sign (optional)
+- `smtp.dkim.hashAlgo` - Hash algorithm, only `'sha256'` (optional, default: `'sha256'`)
+- `signMessage(message, dkimConfig)` - Low-level message signer (exported from main)
+- `validateDKIMConfig(dkim)` - Config validator (exported from main)
+
+### 🔁 Backward Compatibility
+
+- **✅ Zero breaking changes** — omitting `dkim` from config changes nothing
+
+---
+
 ## [3.3.0] - 2025-01-27
 
 ### ✨ What's New

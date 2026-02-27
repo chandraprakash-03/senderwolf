@@ -54,3 +54,22 @@ export {
 
 // Retry utilities
 export { withRetry, DEFAULT_RETRY_OPTIONS } from './lib/retry.js';
+
+// HTML to plain text utility
+export { htmlToText } from './lib/htmlToText.js';
+
+// DKIM signing utilities
+export { signMessage, validateDKIMConfig } from './lib/dkim.js';
+
+// Custom error classes
+export {
+    SenderwolfError,
+    ConnectionError,
+    AuthenticationError,
+    SMTPError,
+    ValidationError,
+    TemplateError,
+    ProviderError,
+    PoolError,
+    AttachmentError
+} from './lib/errors.js';

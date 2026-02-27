@@ -1,4 +1,4 @@
-# 🐺 Senderwolf
+# Senderwolf
 
 > **The simplest way to send emails in Node.js** - Powerful, intuitive, and built for modern developers.
 
@@ -7,37 +7,42 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
-## 🆕 What's New in v3.4.0
+## What's New in v3.5.0
 
-- 🔄 **Retry Logic with Exponential Backoff** - Automatic retry for transient SMTP failures
-- ⚡ **Smart Error Classification** - Never retries auth errors, only transient failures
-- 📡 **Structured Event System** - Lifecycle hooks for `sending`, `sent`, `failed`, `retrying`
-- 🎯 **Event Listeners on Mailer** - `mailer.on()`, `mailer.off()`, `mailer.once()` with chaining
-- 🛡️ **Connection Pooling Fix** - Fixed critical bug where pooling was silently disabled
-- 📊 **Attempt Tracking** - `sendEmail()` now returns `attempts` count in results
-- 🔧 **Pool Schema Validation** - Proper Zod validation for pool configuration
-- 🛡️ **Zero Breaking Changes** - Full backward compatibility
+- **DKIM Signing** - RFC 6376-compliant email authentication (rsa-sha256, relaxed/relaxed) for better deliverability and anti-spoofing
+- **Zero-dependency crypto** - DKIM implemented with Node.js built-in `crypto` — no new packages
+- **Private key file support** - Point `privateKey` to a `.pem` file path instead of embedding the key inline
+- **Custom Error Classes** - Typed errors (`ConnectionError`, `AuthenticationError`, `SMTPError`, etc.) for granular `catch` handling
+- **Auto Plain-Text from HTML** - Automatic plain-text fallback generated when only `html` is provided
+- **Buffer & String Attachments** - Send attachments from `Buffer` or `string` content without file paths
+- **Retry Logic with Exponential Backoff** - Automatic retry for transient SMTP failures
+- **Smart Error Classification** - Never retries auth errors, only transient failures
+- **Structured Event System** - Lifecycle hooks for `sending`, `sent`, `failed`, `retrying`
+- **Event Listeners on Mailer** - `mailer.on()`, `mailer.off()`, `mailer.once()` with chaining
+- **Zero Breaking Changes** - Full backward compatibility
 
-## ✨ Key Features
+##  Key Features
 
-- ✅ **One-liner email sending** - Send emails with a single function call
-- ✅ **High-performance connection pooling** - 50-80% faster bulk email sending
-- ✅ **Auto-provider detection** - Just provide your email, we handle the rest
-- ✅ **Built-in provider presets** - 13+ popular email services ready to use
-- ✅ **Retry with exponential backoff** - Automatic retry for transient SMTP failures
-- ✅ **Event system & hooks** - Lifecycle events for sending, sent, failed, retrying
-- ✅ **Zero SMTP dependencies** - Pure Node.js implementation
-- ✅ **Modern authentication** - OAuth2, XOAUTH2, and traditional methods
-- ✅ **Extensible architecture** - Add any SMTP provider instantly
-- ✅ **Full email features** - CC/BCC, attachments, custom headers, priority
-- ✅ **Template system** - 4 built-in templates with variable substitution
-- ✅ **CLI tools** - Complete command-line interface for email and template management
-- ✅ **Clear error messages** - Actionable feedback for troubleshooting
-- ✅ **TypeScript support** - Complete type definitions with IntelliSense
+- **One-liner email sending** - Send emails with a single function call
+- **High-performance connection pooling** - 50-80% faster bulk email sending
+- **Auto-provider detection** - Just provide your email, we handle the rest
+- **Built-in provider presets** - 13+ popular email services ready to use
+- **Retry with exponential backoff** - Automatic retry for transient SMTP failures
+- **Event system & hooks** - Lifecycle events for sending, sent, failed, retrying
+- **Zero SMTP dependencies** - Pure Node.js implementation
+- **Modern authentication** - OAuth2, XOAUTH2, and traditional methods
+- **Extensible architecture** - Add any SMTP provider instantly
+- **Full email features** - CC/BCC, attachments, custom headers, priority
+- **Auto plain-text** - Automatic text fallback from HTML content
+- **Custom error classes** - Typed errors for granular error handling
+- **DKIM signing** - RFC 6376-compliant email authentication (rsa-sha256)
+- **Template system** - 4 built-in templates with variable substitution
+- **CLI tools** - Complete command-line interface for email and template management
+- **TypeScript support** - Complete type definitions with IntelliSense
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -105,7 +110,7 @@ const results = await mailer.sendBulk(
 
 ---
 
-## 🔷 TypeScript Support
+## TypeScript Support
 
 Senderwolf includes comprehensive TypeScript support with full type definitions:
 
@@ -147,7 +152,7 @@ const result = await sendEmail(config); // Fully typed result
 
 ---
 
-## 📧 Template System
+## Template System
 
 Senderwolf includes a powerful template system with built-in templates and custom template support:
 
@@ -227,7 +232,7 @@ senderwolf-templates load ./templates/welcome.json
 
 ---
 
-## 🌐 Supported Providers
+## Supported Providers
 
 ### **Built-in Support** (No configuration needed!)
 
@@ -262,7 +267,7 @@ await sendEmail({
 });
 ```
 
-### **🔧 Easily Add New Providers**
+### **Easily Add New Providers**
 
 ```js
 import { registerProvider } from "senderwolf";
@@ -291,7 +296,7 @@ await sendEmail({
 
 ---
 
-## 📧 Full Email Features
+## Full Email Features
 
 ### **Multiple Recipients**
 
@@ -356,7 +361,7 @@ await sendEmail({
 
 ---
 
-## 🔐 Authentication Methods
+## Authentication Methods
 
 ### **Basic Authentication** (Most common)
 
@@ -392,7 +397,7 @@ auth: {
 
 ---
 
-## ⚡ Simple API Methods
+## Simple API Methods
 
 ### **One-Liner Functions**
 
@@ -463,7 +468,7 @@ const results = await mailer.sendBulk(
 
 ---
 
-## 🛠️ Configuration
+## Configuration
 
 ### **Config File** (Recommended)
 
@@ -507,7 +512,7 @@ await sendEmail({
 
 ---
 
-## 🔍 Testing & Debugging
+## Testing & Debugging
 
 ### **Test Connection**
 
@@ -553,7 +558,7 @@ console.log(suggestSMTPSettings("newcompany.com"));
 
 ---
 
-## 🚀 CLI Usage
+## CLI Usage
 
 Senderwolf includes comprehensive command-line tools for both email sending and template management.
 
@@ -634,7 +639,7 @@ senderwolf-templates validate welcome
 
 ---
 
-## 📚 Examples & Documentation
+## Examples & Documentation
 
 - **[examples.js](examples.js)** - Comprehensive usage examples
 - **[examples/](examples/)** - Real-world example scripts
@@ -645,9 +650,106 @@ senderwolf-templates validate welcome
 
 ---
 
-## 🔧 Advanced Features
+## Advanced Features
 
-### **🔧 Connection Pooling** (High Performance)
+### *DKIM Email Signing** (Improve Deliverability)
+
+DKIM signs outgoing emails with your RSA private key so receiving servers can verify the email truly came from your domain — dramatically improving deliverability and preventing spoofing.
+
+#### **Setup (one-time)**
+
+```bash
+# Generate a key pair
+openssl genrsa -out private.pem 2048
+openssl rsa -in private.pem -pubout -out public.pem
+```
+
+Add a DNS TXT record:
+
+| Field | Value |
+|-------|-------|
+| **Host** | `mail._domainkey.yourdomain.com` |
+| **Type** | `TXT` |
+| **Value** | `v=DKIM1; k=rsa; p=<base64-public-key>` |
+
+Get the base64 public key value:
+```bash
+node -e "const k=require('fs').readFileSync('public.pem','utf8').replace(/-----.*-----/g,'').replace(/\\n/g,''); console.log(k)"
+```
+
+#### **Usage with `sendEmail`**
+
+```js
+import { sendEmail } from "senderwolf";
+
+await sendEmail({
+	smtp: {
+		host: "smtp.yourdomain.com",
+		port: 465,
+		secure: true,
+		auth: { user: "you@yourdomain.com", pass: "password" },
+		dkim: {
+			domainName: "yourdomain.com",   // d= tag
+			keySelector: "mail",             // s= → mail._domainkey.yourdomain.com
+			privateKey: "-----BEGIN PRIVATE KEY-----\n...", // PEM string or file path
+		},
+	},
+	mail: {
+		to: "recipient@example.com",
+		subject: "DKIM-signed email",
+		html: "<h1>Authenticated!</h1>",
+	},
+});
+```
+
+#### **Usage with `createMailer`** (all emails signed automatically)
+
+```js
+import { createMailer } from "senderwolf";
+
+const mailer = createMailer({
+	smtp: {
+		provider: "gmail",
+		auth: { user: "you@yourdomain.com", pass: "app-password" },
+		dkim: {
+			domainName: "yourdomain.com",
+			keySelector: "mail",
+			privateKey: "/etc/secrets/dkim-private.pem", // file path also works!
+		},
+	},
+});
+
+await mailer.sendHtml("user@example.com", "Hello", "<h1>DKIM-signed!</h1>");
+await mailer.close();
+```
+
+**DKIM Configuration Options:**
+
+| Option | Required | Description |
+|--------|----------|-------------|
+| `domainName` | ✅ | Signing domain (`d=` tag), e.g. `"example.com"` |
+| `keySelector` | ✅ | DNS selector (`s=` tag), e.g. `"mail"` |
+| `privateKey` | ✅ | RSA private key PEM string **or** absolute path to a `.pem` file |
+| `headerFields` | optional | Headers to include in signature (defaults: `from`, `to`, `subject`, `date`, `message-id`, `mime-version`, `content-type`, `cc`) |
+| `hashAlgo` | optional | Only `'sha256'` supported (default: `'sha256'`) |
+
+**Technical details:** rsa-sha256 · relaxed/relaxed canonicalization · RFC 6376 compliant · zero new dependencies
+
+**Low-level utilities:**
+
+```js
+import { signMessage, validateDKIMConfig } from "senderwolf";
+
+// Validate config — throws a descriptive error if invalid
+validateDKIMConfig({ domainName: "example.com", keySelector: "mail", privateKey: pem });
+
+// Manually sign a raw email message string
+const signedMessage = signMessage(rawMessage, dkimConfig);
+```
+
+---
+
+### **Connection Pooling** (High Performance)
 
 Senderwolf includes built-in connection pooling for efficient bulk email sending:
 
@@ -699,13 +801,13 @@ await closeAllPools();
 
 **Performance Benefits:**
 
-- 🚀 **50-80% faster** bulk email sending
-- 💾 **Reduced memory usage** through connection reuse
-- ⚡ **Lower CPU usage** with efficient connection management
-- 🛡️ **Built-in rate limiting** to avoid provider limits
-- 🔄 **Automatic connection rotation** for reliability
+- **50-80% faster** bulk email sending
+- **Reduced memory usage** through connection reuse
+- **Lower CPU usage** with efficient connection management
+- **Built-in rate limiting** to avoid provider limits
+- **Automatic connection rotation** for reliability
 
-### **🔄 Retry Logic with Exponential Backoff**
+### **Retry Logic with Exponential Backoff**
 
 Senderwolf automatically retries failed email sends on transient errors like connection timeouts and SMTP 4xx responses — with exponential backoff and jitter to prevent thundering herd:
 
@@ -782,8 +884,8 @@ const { result, attempts } = await withRetry(
 
 **Smart error classification:**
 
-- ✅ **Retries:** `ECONNRESET`, `ETIMEDOUT`, `ECONNREFUSED`, `EPIPE`, `EHOSTUNREACH`, SMTP 4xx, DNS failures
-- ❌ **Never retries:** Authentication errors, invalid mailbox, relay denied, SMTP 5xx
+- **Retries:** `ECONNRESET`, `ETIMEDOUT`, `ECONNREFUSED`, `EPIPE`, `EHOSTUNREACH`, SMTP 4xx, DNS failures
+- **Never retries:** Authentication errors, invalid mailbox, relay denied, SMTP 5xx
 
 **Retry Configuration Options:**
 
@@ -797,7 +899,7 @@ const { result, attempts } = await withRetry(
 
 ---
 
-### **📡 Event System & Lifecycle Hooks**
+### **Event System & Lifecycle Hooks**
 
 Senderwolf emits events at every stage of the email lifecycle — perfect for logging, monitoring, analytics, and error tracking:
 
@@ -888,21 +990,77 @@ results.forEach((result) => {
 });
 ```
 
-### **Custom Error Handling**
+### **Custom Error Classes**
+
+Senderwolf provides typed error classes so you can handle specific failure modes with `instanceof` checks:
 
 ```js
+import {
+	sendEmail,
+	ConnectionError,
+	AuthenticationError,
+	SMTPError,
+	TemplateError,
+	SenderwolfError,
+} from "senderwolf";
+
 try {
-	await sendEmail({
-		/* config */
-	});
+	await sendEmail({ /* config */ });
 } catch (error) {
-	if (error.message.includes("authentication")) {
-		console.log("Check your credentials");
-	} else if (error.message.includes("connection")) {
-		console.log("Check your network/firewall");
+	if (error instanceof AuthenticationError) {
+		console.error("Check your credentials:", error.message);
+	} else if (error instanceof ConnectionError) {
+		console.error("Network/firewall issue:", error.message);
+	} else if (error instanceof SMTPError) {
+		console.error(`SMTP ${error.responseCode}:`, error.smtpResponse);
+	} else if (error instanceof SenderwolfError) {
+		console.error(`[${error.code}] ${error.message}`);
 	}
 }
 ```
+
+**Available Error Classes:**
+
+| Class | Code | When |
+|---|---|---|
+| `SenderwolfError` | `ERR_SENDERWOLF` | Base class for all errors |
+| `ConnectionError` | `ERR_SMTP_CONNECTION` | Socket, TLS, or timeout failures |
+| `AuthenticationError` | `ERR_SMTP_AUTH` | Wrong credentials or unsupported auth |
+| `SMTPError` | `ERR_SMTP_PROTOCOL` | SMTP command rejections (has `responseCode` & `smtpResponse`) |
+| `ValidationError` | `ERR_VALIDATION` | Schema validation failures |
+| `TemplateError` | `ERR_TEMPLATE` | Missing or invalid templates |
+| `ProviderError` | `ERR_PROVIDER` | Missing or invalid provider config |
+| `PoolError` | `ERR_POOL` | Connection pool closed or expired |
+| `AttachmentError` | `ERR_ATTACHMENT` | Unsupported attachment types |
+
+All errors extend `SenderwolfError` → `Error`, so existing `catch` blocks continue to work.
+
+### **Auto Plain-Text from HTML**
+
+When you provide only `html` content, Senderwolf automatically generates a plain-text version — ensuring multipart/alternative emails always have a text fallback:
+
+```js
+await sendEmail({
+	smtp: { provider: "gmail", auth: { user: "you@gmail.com", pass: "app-password" } },
+	mail: {
+		to: "recipient@example.com",
+		subject: "HTML Only",
+		html: "<h1>Welcome!</h1><p>Thanks for <a href='https://example.com'>signing up</a>.</p>",
+		// text is auto-generated: "Welcome!\n\nThanks for signing up (https://example.com)."
+	},
+});
+```
+
+The converter handles links (`text (url)` format), lists, block elements, HTML entities, and whitespace normalization. You can also use it directly:
+
+```js
+import { htmlToText } from "senderwolf";
+
+const text = htmlToText("<h1>Hello</h1><p>World</p>");
+console.log(text); // "Hello\n\nWorld"
+```
+
+If you provide both `html` and `text`, your explicit `text` is used as-is.
 
 ### **Provider Management**
 
@@ -921,17 +1079,18 @@ console.log(getAllProviders());
 
 ---
 
-## 🔒 Security Best Practices
+## Security Best Practices
 
 1. **Use App Passwords** for Gmail (not your main password)
 2. **Use OAuth2** for production applications
 3. **Store credentials** in environment variables or config files
 4. **Enable 2FA** on your email accounts
 5. **Use STARTTLS** when available (`requireTLS: true`)
+6. **Enable DKIM signing** to authenticate your domain and boost deliverability
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Whether it's:
 
@@ -944,25 +1103,27 @@ See our [contribution guidelines](CONTRIBUTING.md) and [provider addition guide]
 
 ---
 
-## 📄 License
+## License
 
 MIT © 2025 [Chandraprakash](https://github.com/Chandraprakash-03)
 
 ---
 
-## 🌟 Why Senderwolf?
+## Why Senderwolf?
 
-- **🚀 Faster development** - Less time configuring, more time building
-- **⚡ High performance** - Built-in connection pooling for 50-80% faster bulk sending
-- **🔄 Resilient** - Automatic retry with exponential backoff for transient failures
-- **📡 Observable** - Structured event system for logging, monitoring, and analytics
-- **🧠 Lower cognitive load** - Intuitive API that just makes sense
-- **🔮 Future-proof** - Easily add any new email provider
-- **🪶 Lightweight** - Zero unnecessary dependencies
-- **🛡️ Reliable** - Built on Node.js native modules with robust error handling
-- **📧 Template system** - Built-in templates with advanced variable substitution
-- **🔧 CLI tools** - Complete command-line interface for all operations
-- **📚 Well-documented** - Clear examples and guides
+- **Faster development** - Less time configuring, more time building
+- **High performance** - Built-in connection pooling for 50-80% faster bulk sending
+- **Resilient** - Automatic retry with exponential backoff for transient failures
+- **Observable** - Structured event system for logging, monitoring, and analytics
+- **Lower cognitive load** - Intuitive API that just makes sense
+- **Future-proof** - Easily add any new email provider
+- **Lightweight** - Zero unnecessary dependencies
+- **Reliable** - Built on Node.js native modules with typed custom errors
+- **Auto plain-text** - Automatic text fallback from HTML content
+- **DKIM signing** - RFC 6376-compliant authentication, zero extra deps
+- **Template system** - Built-in templates with advanced variable substitution
+- **CLI tools** - Complete command-line interface for all operations
+- **Well-documented** - Clear examples and guides
 
 **Ready to simplify your email sending?** Install senderwolf today!
 
@@ -974,7 +1135,7 @@ npm install senderwolf
 
 <div align="center">
 
-**[🌐 Website](https://senderwolf.vercel.app)** • **[📖 Documentation](https://github.com/Chandraprakash-03/senderwolf)** • **[🐛 Issues](https://github.com/Chandraprakash-03/senderwolf/issues)** • **[💬 Discussions](https://github.com/Chandraprakash-03/senderwolf/discussions)**
+**[Website](https://senderwolf.vercel.app)** • **[Documentation](https://github.com/Chandraprakash-03/senderwolf)** • **[Issues](https://github.com/Chandraprakash-03/senderwolf/issues)** • **[Discussions](https://github.com/Chandraprakash-03/senderwolf/discussions)**
 
 Made with ❤️ for developers who value simplicity
 
