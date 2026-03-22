@@ -129,6 +129,8 @@ export interface FileAttachment {
 	filename: string;
 	path: string;
 	contentType?: string;
+	/** Content-ID for inline images (e.g. 'logo-1') */
+	cid?: string;
 }
 
 export interface BufferAttachment {
@@ -136,6 +138,8 @@ export interface BufferAttachment {
 	content: Buffer | string;
 	contentType?: string;
 	encoding?: string;
+	/** Content-ID for inline images (e.g. 'logo-1') */
+	cid?: string;
 }
 
 export interface StreamAttachment {
@@ -277,6 +281,8 @@ export interface SMTPConfig {
 	 * using rsa-sha256 and relaxed/relaxed canonicalization (RFC 6376).
 	 */
 	dkim?: DKIMConfig;
+	/** Custom logger instance (must implement info, warn, error, debug) */
+	logger?: any;
 }
 
 // ============================================================================
@@ -327,6 +333,10 @@ export interface SendEmailConfig {
 	mail: MailConfig;
 	/** Retry configuration for transient failures */
 	retry?: RetryConfig;
+	/** Schedule email to be sent at a specific time */
+	sendAt?: Date | string;
+	/** Delay email sending by specified milliseconds */
+	delay?: number;
 }
 
 export interface MailerDefaults {

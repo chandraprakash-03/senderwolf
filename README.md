@@ -7,19 +7,14 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
-## What's New in v3.5.0
+## What's New in v3.6.0
 
-- **DKIM Signing** - RFC 6376-compliant email authentication (rsa-sha256, relaxed/relaxed) for better deliverability and anti-spoofing
-- **Zero-dependency crypto** - DKIM implemented with Node.js built-in `crypto` — no new packages
-- **Private key file support** - Point `privateKey` to a `.pem` file path instead of embedding the key inline
-- **Custom Error Classes** - Typed errors (`ConnectionError`, `AuthenticationError`, `SMTPError`, etc.) for granular `catch` handling
-- **Auto Plain-Text from HTML** - Automatic plain-text fallback generated when only `html` is provided
-- **Buffer & String Attachments** - Send attachments from `Buffer` or `string` content without file paths
-- **Retry Logic with Exponential Backoff** - Automatic retry for transient SMTP failures
-- **Smart Error Classification** - Never retries auth errors, only transient failures
-- **Structured Event System** - Lifecycle hooks for `sending`, `sent`, `failed`, `retrying`
-- **Event Listeners on Mailer** - `mailer.on()`, `mailer.off()`, `mailer.once()` with chaining
-- **Zero Breaking Changes** - Full backward compatibility
+- **Pluggable Logger** - Inject your own logger (Winston, Pino, etc.) or use the built-in console-based logger
+- **Environment Variable Support** - Configure SMTP settings via `SENDERWOLF_` prefixed env vars for cloud-native deployments
+- **Inline Images (CID)** - Support for `Content-ID` (CID) to embed images directly in HTML emails
+- **Automatic MIME Detection** - Intelligent MIME type detection for attachments based on file extensions
+- **Email Scheduling & Delayed Send** - Schedule emails for specific dates or add arbitrary delays
+- **Zero Breaking Changes** - Full backward compatibility with v3.5.x
 
 ##  Key Features
 
@@ -36,6 +31,11 @@
 - **Auto plain-text** - Automatic text fallback from HTML content
 - **Custom error classes** - Typed errors for granular error handling
 - **DKIM signing** - RFC 6376-compliant email authentication (rsa-sha256)
+- **Pluggable logging** - Support for custom loggers (Winston, Pino, etc.)
+- **Env-based config** - Zero-code configuration via environment variables
+- **Inline images (CID)** - Embed images directly inside HTML bodies
+- **Automatic MIME detection** - Smart content-type handling for attachments
+- **Email scheduling** - Send emails at a specific date or after a delay
 - **Template system** - 4 built-in templates with variable substitution
 - **CLI tools** - Complete command-line interface for email and template management
 - **TypeScript support** - Complete type definitions with IntelliSense

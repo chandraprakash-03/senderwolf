@@ -1,6 +1,6 @@
 {
     "name": "senderwolf",
-    "version": "3.5.0",
+    "version": "3.6.0",
     "description": "The simplest way to send emails in Node.js - a true nodemailer alternative with zero learning curve and built-in connection pooling",
     "main": "index.js",
     "types": "types/index.d.ts",
@@ -52,10 +52,10 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/Chandraprakash-03/senderwolf.git"
+        "url": "git+https://github.com/chandraprakash-03/senderwolf.git"
     },
     "bugs": {
-        "url": "https://github.com/Chandraprakash-03/senderwolf/issues"
+        "url": "https://github.com/chandraprakash-03/senderwolf/issues"
     },
     "homepage": "https://senderwolf.vercel.app"
 }
