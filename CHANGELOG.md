@@ -30,6 +30,36 @@ All notable changes to Senderwolf will be documented in this file.
 
 ---
 
+## [3.4.0] - 2026-02-21
+
+## ✨ What's New
+
+- Retry Logic with Exponential Backoff
+- Smart Error Classification
+- Jitter on Retry Delays
+- Custom Retry Control
+- Structured Event System
+- Event Listeners on Mailer Instances
+- Global Event Listeners
+- Attempt Tracking in Results 
+
+## 🛠️ Improvements
+
+- Connection Pooling Fix
+- Pool Configuration Validation
+- Provider Field Preserved
+- Enhanced TypeScript Definitions
+- Comprehensive Validation Suite
+
+## 🔄️ Backward Compatibility
+
+- Fully compatible with older versions
+- Events fire silently with no listeners attached — zero overhead when unused
+- sendEmail() result shape unchanged — attempts field is additive
+- All existing APIs (sendGmail, quickSend, createMailer, etc.) work identically
+
+---
+
 ## [3.3.0] - 2025-01-27
 
 ### ✨ What's New
