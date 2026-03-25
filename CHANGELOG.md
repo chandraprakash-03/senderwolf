@@ -2,6 +2,30 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [3.7.0] - 2026-03-25
+
+### ✨ What's New
+
+- **📅 Calendar Invites (ICS)** - First-class support for sending RFC 5545-compliant calendar invites (`.ics`) as email attachments.
+  - Zero-dependency Node.js implementation
+  - Auto-rendering in major clients (Gmail, Outlook, Apple Mail) via `multipart/alternative` injection
+  - Extensive support for event metadata (summary, time, location, attendees, alarms, recurrence)
+  - Automatic plain-text fallback generation if no other body is provided
+
+---
+
+## [3.6.0] - 2026-03-22
+
+### ✨ What's New
+
+- **📝 Pluggable Logger** - Inject your own logger (Winston, Pino, etc.) or use the built-in console-based logger
+- **⚙️ Environment Variable Support** - Configure SMTP settings via `SENDERWOLF_` prefixed env vars for cloud-native deployments
+- **🖼️ Inline Images (CID)** - Support for `Content-ID` (CID) to embed images directly in HTML emails
+- **📎 Automatic MIME Detection** - Intelligent MIME type detection for attachments based on file extensions
+- **⏱️ Email Scheduling & Delayed Send** - Schedule emails for specific dates or add arbitrary delays
+
+---
+
 ## [3.5.0] - 2026-02-27
 
 ### ✨ What's New

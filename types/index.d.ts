@@ -288,6 +288,57 @@ export interface SMTPConfig {
 // ============================================================================
 // Mail Configuration Types
 // ============================================================================
+// Calendar Configuration Types
+// ============================================================================
+
+export interface CalendarEventAttendee {
+	name?: string;
+	email: string;
+	rsvp?: boolean;
+}
+
+export interface CalendarEventAlarm {
+	/** Trigger duration, e.g. '-PT15M' for 15 min before */
+	trigger: string;
+	description?: string;
+}
+
+export interface CalendarEvent {
+	/** Unique event ID (auto-generated if omitted) */
+	uid?: string;
+	/** Event title (required) */
+	summary: string;
+	/** Event start time (required) */
+	start: Date;
+	/** Event end time (required) */
+	end: Date;
+	/** Event description */
+	description?: string;
+	/** Event location */
+	location?: string;
+	/** Event URL */
+	url?: string;
+	/** Organizer info */
+	organizer?: { name?: string; email: string };
+	/** Attendees */
+	attendees?: CalendarEventAttendee[];
+	/** iTIP method (default: REQUEST) */
+	method?: 'REQUEST' | 'CANCEL' | 'REPLY';
+	/** Event status (default: CONFIRMED) */
+	status?: 'CONFIRMED' | 'TENTATIVE' | 'CANCELLED';
+	/** All-day event (date only, no time) */
+	allDay?: boolean;
+	/** RRULE string for recurring events (e.g. 'FREQ=WEEKLY;COUNT=4') */
+	recurrence?: string;
+	/** Reminder alarm */
+	alarm?: CalendarEventAlarm;
+	/** Sequence number — increment on updates (default: 0) */
+	sequence?: number;
+}
+
+// ============================================================================
+// Mail Configuration Types
+// ============================================================================
 
 export interface MailConfig {
 	/** Sender email address */
@@ -322,6 +373,8 @@ export interface MailConfig {
 	date?: Date;
 	/** Custom message ID */
 	messageId?: string;
+	/** Attach a calendar invite (ICS) to this email */
+	calendar?: CalendarEvent;
 }
 
 // ============================================================================
@@ -767,6 +820,26 @@ export function signMessage(message: string, dkimConfig: DKIMConfig): string;
  * Returns true if the config is valid.
  */
 export function validateDKIMConfig(dkim: DKIMConfig): true;
+
+// ============================================================================
+// ICS / Calendar Utility Functions
+// ============================================================================
+
+/**
+ * Generate a complete RFC 5545 iCalendar string from an event object.
+ */
+export function generateICS(event: CalendarEvent): string;
+
+/**
+ * Validate a calendar event object.
+ * Throws a descriptive Error if required fields are missing or invalid.
+ */
+export function validateCalendarEvent(event: any): true;
+
+/**
+ * Format a JS Date to iCalendar UTC date-time string: YYYYMMDDTHHmmssZ
+ */
+export function formatICSDate(date: Date): string;
 
 // ============================================================================
 // Custom Error Classes

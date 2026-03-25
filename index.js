@@ -61,6 +61,9 @@ export { htmlToText } from './lib/htmlToText.js';
 // DKIM signing utilities
 export { signMessage, validateDKIMConfig } from './lib/dkim.js';
 
+// ICS / Calendar utilities
+export { generateICS, validateCalendarEvent, formatICSDate } from './lib/ics.js';
+
 // Custom error classes
 export {
     SenderwolfError,

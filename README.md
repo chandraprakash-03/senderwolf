@@ -7,6 +7,10 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v3.7.0
+
+- **Calendar Invites (ICS)** - First-class support for sending RFC 5545-compliant calendar invites (`.ics`) natively. Auto-renders in major clients (Gmail, Outlook, Apple Mail) via `multipart/alternative` injection.
+
 ## What's New in v3.6.0
 
 - **Pluggable Logger** - Inject your own logger (Winston, Pino, etc.) or use the built-in console-based logger
@@ -14,7 +18,6 @@
 - **Inline Images (CID)** - Support for `Content-ID` (CID) to embed images directly in HTML emails
 - **Automatic MIME Detection** - Intelligent MIME type detection for attachments based on file extensions
 - **Email Scheduling & Delayed Send** - Schedule emails for specific dates or add arbitrary delays
-- **Zero Breaking Changes** - Full backward compatibility with v3.5.x
 
 ##  Key Features
 
@@ -36,6 +39,7 @@
 - **Inline images (CID)** - Embed images directly inside HTML bodies
 - **Automatic MIME detection** - Smart content-type handling for attachments
 - **Email scheduling** - Send emails at a specific date or after a delay
+- **Calendar invites (ICS)** - Generate and send RFC 5545 calendar events natively
 - **Template system** - 4 built-in templates with variable substitution
 - **CLI tools** - Complete command-line interface for email and template management
 - **TypeScript support** - Complete type definitions with IntelliSense
@@ -336,6 +340,33 @@ await sendEmail({
 	},
 });
 ```
+
+### **Calendar Invites (.ics)**
+
+Senderwolf can automatically generate and attach RFC 5545-compliant calendar invites that render natively in Gmail, Outlook, and Apple Mail.
+
+```js
+await sendEmail({
+	smtp: {
+		provider: "gmail",
+		auth: { user: "your@gmail.com", pass: "app-password" },
+	},
+	mail: {
+		to: "attendee@example.com",
+		subject: "Project Kickoff",
+		calendar: {
+			summary: "Project Kickoff Meeting",
+			start: new Date("2026-04-01T10:00:00Z"),
+			end: new Date("2026-04-01T11:00:00Z"),
+			location: "Google Meet",
+			organizer: { name: "Project Manager", email: "your@gmail.com" },
+			attendees: [{ email: "attendee@example.com", rsvp: true }],
+			alarm: { trigger: "-PT15M", description: "Reminder" }
+		}
+	},
+});
+```
+*Note: If neither `html` nor `text` are provided, a plain-text fallback will be automatically generated from the event details.*
 
 ### **Advanced Options**
 
