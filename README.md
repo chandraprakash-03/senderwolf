@@ -7,17 +7,14 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v3.8.0
+
+- **Delivery Status Notification (DSN)** - Native support for tracking email delivery, failure, or delay directly from the SMTP server.
+- **AMP for Email** - Native support for interactive, dynamic emails (`text/x-amp-html`) with automatic multipart construction.
+
 ## What's New in v3.7.0
 
 - **Calendar Invites (ICS)** - First-class support for sending RFC 5545-compliant calendar invites (`.ics`) natively. Auto-renders in major clients (Gmail, Outlook, Apple Mail) via `multipart/alternative` injection.
-
-## What's New in v3.6.0
-
-- **Pluggable Logger** - Inject your own logger (Winston, Pino, etc.) or use the built-in console-based logger
-- **Environment Variable Support** - Configure SMTP settings via `SENDERWOLF_` prefixed env vars for cloud-native deployments
-- **Inline Images (CID)** - Support for `Content-ID` (CID) to embed images directly in HTML emails
-- **Automatic MIME Detection** - Intelligent MIME type detection for attachments based on file extensions
-- **Email Scheduling & Delayed Send** - Schedule emails for specific dates or add arbitrary delays
 
 ##  Key Features
 
@@ -40,6 +37,8 @@
 - **Automatic MIME detection** - Smart content-type handling for attachments
 - **Email scheduling** - Send emails at a specific date or after a delay
 - **Calendar invites (ICS)** - Generate and send RFC 5545 calendar events natively
+- **DSN Support** - Detailed delivery status notifications and tracking
+- **AMP Email** - Send interactive, dynamic emails
 - **Template system** - 4 built-in templates with variable substitution
 - **CLI tools** - Complete command-line interface for email and template management
 - **TypeScript support** - Complete type definitions with IntelliSense

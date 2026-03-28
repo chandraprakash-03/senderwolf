@@ -2,6 +2,17 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [3.8.0] - 2026-03-28
+
+### ✨ What's New
+
+- **📫 Delivery Status Notification (DSN)** - Native support for tracking email delivery, failure, or delay directly from the SMTP server.
+  - Automatically handles `RET`, `ENVID`, `NOTIFY`, and `ORCPT` arguments
+- **⚡ AMP for Email** - Native support for interactive, dynamic AMP emails (`text/x-amp-html`).
+  - Automatically handles optimal `multipart/alternative` structural injection for backward HTML compatibility.
+
+---
+
 ## [3.7.0] - 2026-03-25
 
 ### ✨ What's New
