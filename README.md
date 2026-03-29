@@ -7,14 +7,9 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
-## What's New in v3.8.0
+## What's New in v3.9.0
 
-- **Delivery Status Notification (DSN)** - Native support for tracking email delivery, failure, or delay directly from the SMTP server.
-- **AMP for Email** - Native support for interactive, dynamic emails (`text/x-amp-html`) with automatic multipart construction.
-
-## What's New in v3.7.0
-
-- **Calendar Invites (ICS)** - First-class support for sending RFC 5545-compliant calendar invites (`.ics`) natively. Auto-renders in major clients (Gmail, Outlook, Apple Mail) via `multipart/alternative` injection.
+- **Built-in Dev Preview Server** - Zero-configuration embedded HTTP server to visualize and test your emails locally without ever hitting the network or using up any SMTP sending capacity. Set `dev: true` to instantly intercept and preview HTML, Text, and AMP versions in a beautiful local dashboard at `localhost:3000`.
 
 ##  Key Features
 
@@ -543,6 +538,24 @@ await sendEmail({
 ---
 
 ## Testing & Debugging
+
+### **The Dev Preview Server** (Local Testing)
+Never waste your API quota or pollute your own inbox during development again! Simply set `dev: true` inside your configuration and Senderwolf will intercept your emails before they ever hit the network, displaying them on a beautifully rendered local web dashboard.
+
+```js
+await sendEmail({
+	smtp: {
+		dev: true, // 🟢 Instantly reroutes emails to the UI Dashboard!
+		auth: { user: "your@gmail.com", pass: "app-password" },
+	},
+	mail: {
+		to: "recipient@example.com",
+		subject: "Local design test",
+		html: "<h1>This will be intercepted</h1>",
+	},
+});
+```
+When you run your application, the console will elegantly provide a link to `http://localhost:3000`. Open it in your browser to inspect the visual HTML layout, plain text rendering, raw embedded AMP tags, and structural metadata of your emails! No third-party tools or configuration required.
 
 ### **Test Connection**
 

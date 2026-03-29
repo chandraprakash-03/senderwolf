@@ -2,9 +2,20 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
-## [3.8.0] - 2026-03-28
+## [3.9.0] - 2026-03-29
 
 ### ✨ What's New
+
+- **🛠️ Inbuilt Dev Preview Server** - Zero-configuration embedded HTTP server to visualize and test your emails locally without ever dropping a payload onto the network.
+  - Set `dev: true` inside your `smtp` configuration to automatically intercept outgoing mail.
+  - Provides a beautiful dashboard at `http://localhost:3000` out-of-the-box.
+  - Renders visual previews for HTML, plain text, and AMP strings.
+  - Native protection against port conflicts (auto-increments upwards).
+  - Designed completely ephemerally with `server.unref()` to avoid Node process hanging.
+
+---
+
+## [3.8.0] - 2026-03-28
 
 - **📫 Delivery Status Notification (DSN)** - Native support for tracking email delivery, failure, or delay directly from the SMTP server.
   - Automatically handles `RET`, `ENVID`, `NOTIFY`, and `ORCPT` arguments
