@@ -7,9 +7,20 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v4.0.0
+
+- **🎨 Automatic CSS Inlining** - Robust CSS-to-inline-styles transformation using `juice`. Set `inlineCSS: true` to automatically move your `<style>` block rules into element `style` attributes.
+- **🛡️ SMTP Circuit Breakers** - Built-in resilience. Automatically "opens" the circuit after 5 consecutive failures, failing fast for subsequent requests.
+- **✂️ HTML Minification** - Native HTML minifier to reduce email payload size. Set `minify: true` in your mail options.
+- **🏷️ BIMI & DMARC Support** - Support for `BIMI-Location`, `BIMI-Selector` and `DMARC-Filter` headers.
+- **⏱️ Human-Readable Scheduling** - Enhanced `delay` and `sendAt` to support interval strings like `"5m"`, `"1h"`, or `"2d"`.
+- **🔌 Official Plugin Ecosystem** - Launching three new official plugins: **Metrics**, **Open Tracker**, and **Local Queue** for crash-resilient monitoring and analytics.
+
+---
+
 ## What's New in v3.9.0
 
-- **Built-in Dev Preview Server** - Zero-configuration embedded HTTP server to visualize and test your emails locally without ever hitting the network or using up any SMTP sending capacity. Set `dev: true` to instantly intercept and preview HTML, Text, and AMP versions in a beautiful local dashboard at `localhost:3000`.
+- **🛠️ Inbuilt Dev Preview Server** - Zero-configuration embedded HTTP server to visualize and test your emails locally without ever hitting the network or using up any SMTP sending capacity. Set `dev: true` to instantly intercept and preview HTML, Text, and AMP versions in a beautiful local dashboard at `localhost:3000`.
 
 ##  Key Features
 
@@ -34,6 +45,10 @@
 - **Calendar invites (ICS)** - Generate and send RFC 5545 calendar events natively
 - **DSN Support** - Detailed delivery status notifications and tracking
 - **AMP Email** - Send interactive, dynamic emails
+- **🎨 CSS Inlining** - Move `<style>` rules into `style` attributes automatically
+- **✂️ HTML Minification** - Collapse whitespace and strip comments from email bodies
+- **🛡️ SMTP Circuit Breaker** - Prevent resource exhaustion with built-in fail-fast logic
+- **🏷️ BIMI & DMARC** - Native support for premium deliverability headers
 - **Template system** - 4 built-in templates with variable substitution
 - **CLI tools** - Complete command-line interface for email and template management
 - **TypeScript support** - Complete type definitions with IntelliSense
@@ -362,26 +377,113 @@ await sendEmail({
 ```
 *Note: If neither `html` nor `text` are provided, a plain-text fallback will be automatically generated from the event details.*
 
-### **Advanced Options**
+### **Advanced Features (v3.9.1)**
+
+#### **CSS Inlining & Minification**
+Automatically transform and optimize your HTML emails for better client compatibility and smaller payload sizes.
 
 ```js
 await sendEmail({
-	smtp: {
-		provider: "gmail",
-		auth: { user: "your@gmail.com", pass: "app-password" },
-	},
-	mail: {
-		to: "recipient@example.com",
-		replyTo: "support@example.com",
-		subject: "Advanced Email",
-		html: "<h1>Professional Email</h1>",
-		priority: "high",
-		headers: {
-			"X-Custom-Header": "Custom Value",
-			"X-Mailer": "Senderwolf",
-		},
-	},
+  smtp: { /* ... */ },
+  mail: {
+    to: "user@example.com",
+    subject: "Styled Email",
+    html: `
+      <style>.text { color: red; }</style>
+      <h1 class="text">Hello World</h1>
+    `,
+    inlineCSS: true, // 🎨 Inlines CSS into style attributes
+    minify: true,    // ✂️ Strips comments and collapses whitespace
+  }
 });
+```
+
+#### **SMTP Circuit Breakers**
+Protect your application from flaky SMTP providers. If a provider fails 5 times in a row, the circuit "opens" and subsequent requests fail fast immediately, preventing your app from hanging on timeouts.
+
+```js
+// Configured automatically per-SMTP pool!
+// You can adjust thresholds in your config (future release)
+```
+
+#### **BIMI & DMARC Headers**
+Improve your brand visibility in inboxes and boost your deliverability score.
+
+```js
+await sendEmail({
+  smtp: { /* ... */ },
+  mail: {
+    to: "user@example.com",
+    subject: "Authenticated Brand",
+    bimi: {
+      location: "https://yourdomain.com/logo.svg",
+      selector: "default"
+    },
+    dmarc: {
+      policy: "quarantine", // Adding DMARC-Filter header
+      report: true
+    }
+  }
+});
+```
+
+#### **Scheduling Intervals**
+Use human-readable strings for scheduling and delays.
+
+```js
+await sendEmail({
+  smtp: { /* ... */ },
+  mail: { /* ... */ },
+  delay: "5m", // wait 5 minutes
+  // OR
+  sendAt: "1h" // schedule for 1 hour from now
+});
+```
+
+---
+
+## 🔌 Official Plugin Ecosystem
+
+Extend Senderwolf with official, zero-dependency plugins for monitoring, analytics, and persistent queuing.
+
+### **1. Metrics & Monitoring** ([`@senderwolf/plugin-metrics`](file:///@senderwolf/plugin-metrics))
+Auto-instruments your connection pool to export live statistics via JSON or Prometheus.
+
+```bash
+npm install @senderwolf/plugin-metrics
+```
+
+```js
+import { MetricsPlugin } from '@senderwolf/plugin-metrics';
+const metrics = new MetricsPlugin().instrument(pool);
+await metrics.startServer(9100); // Prometheus endpoint at :9100/metrics/text
+```
+
+### **2. Open & Click Tracking** ([`@senderwolf/plugin-open-tracker`](file:///@senderwolf/plugin-open-tracker))
+Inject tracking pixels and rewrite links to get engagement analytics.
+
+```bash
+npm install @senderwolf/plugin-open-tracker
+```
+
+```js
+import { OpenTracker } from '@senderwolf/plugin-open-tracker';
+const tracker = new OpenTracker({ baseUrl: 'https://analytics.yourdomain.com' });
+const { mailOptions } = tracker.instrument({ html: '<h1>Hello</h1><a href="...">Click me</a>' });
+await sendEmail({ mail: mailOptions });
+```
+
+### **3. Persistent Local Queue** ([`@senderwolf/plugin-queue-local`](file:///@senderwolf/plugin-queue-local))
+Zero-config SQLite queue to ensure your bulk emails survive process restarts.
+
+```bash
+npm install @senderwolf/plugin-queue-local
+```
+
+```js
+import { LocalQueueStore } from '@senderwolf/plugin-queue-local';
+const localQueue = new LocalQueueStore({ dbPath: './jobs.db' });
+await sendEmail({ ..., queue: { store: localQueue } });
 ```
 
 ---

@@ -2,6 +2,25 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [4.0.0] - 2026-03-31
+
+### ✨ What's New
+
+- **🎨 Automatic CSS Inlining** - Robust CSS-to-inline-styles transformation using `juice`. Set `inlineCSS: true` to automatically move your `<style>` block rules into element `style` attributes.
+- **🛡️ SMTP Circuit Breakers** - Built-in resilience. Automatically "opens" the circuit after 5 consecutive failures, failing fast for subsequent requests.
+- **⏱️ Human-Readable Scheduling** - Enhanced `delay` and `sendAt` to support interval strings like `"5m"`, `"1h"`, or `"2d"`.
+- **✂️ HTML Minification** - Native HTML minifier to reduce email payload size. Set `minify: true` in your mail options.
+- **🏷️ BIMI & DMARC Support** - Support for `BIMI-Location`, `BIMI-Selector` and `DMARC-Filter` headers.
+- **🔌 Official Plugin Ecosystem** - Launching three new official plugins to extend core functionality.
+
+### 🔌 Official Plugins
+
+- **[`@senderwolf/plugin-metrics`](file:///@senderwolf/plugin-metrics)**: Multi-dimensional monitoring for active connections, pooled bytes, and failed deliveries with built-in Prometheus/JSON HTTP server.
+- **[`@senderwolf/plugin-open-tracker`](file:///@senderwolf/plugin-open-tracker)**: Zero-dependency email analytics for tracking opens (pixel injection) and clicks (link rewriting) with a built-in tracking server.
+- **[`@senderwolf/plugin-queue-local`](file:///@senderwolf/plugin-queue-local)**: Persistent SQLite-based bulk job queue for crash-resilient background email sending.
+
+---
+
 ## [3.9.0] - 2026-03-29
 
 ### ✨ What's New

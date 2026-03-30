@@ -842,6 +842,37 @@ export function validateCalendarEvent(event: any): true;
 export function formatICSDate(date: Date): string;
 
 // ============================================================================
+// Queue Store Types
+// ============================================================================
+
+/**
+ * Abstract base class for Queue Storage backends.
+ * Extend this class to implement a custom persistent queue plugin
+ * (e.g. @senderwolf/plugin-queue-local).
+ */
+export abstract class QueueStore {
+	protected options: Record<string, any>;
+	constructor(options?: Record<string, any>);
+
+	/**
+	 * Enqueue a new email job.
+	 * @param payload - The job payload containing smtp, mailOptions, retryOptions, etc.
+	 * @returns The unique job ID assigned to the queued email.
+	 */
+	abstract enqueue(payload: Record<string, any>): Promise<string | number>;
+
+	/**
+	 * Start the background worker daemon that processes queued jobs.
+	 */
+	abstract startWorker(): Promise<void>;
+
+	/**
+	 * Gracefully stop the worker and release any held resources.
+	 */
+	abstract stopWorker(): Promise<void>;
+}
+
+// ============================================================================
 // Custom Error Classes
 // ============================================================================
 
@@ -849,7 +880,7 @@ export function formatICSDate(date: Date): string;
  * Base error class for all Senderwolf errors
  */
 export class SenderwolfError extends Error {
-	name: 'SenderwolfError';
+	name: string;
 	code: string;
 	constructor(message: string, code?: string);
 }
@@ -1096,6 +1127,7 @@ declare const senderwolf: {
 	ProviderError: typeof ProviderError;
 	PoolError: typeof PoolError;
 	AttachmentError: typeof AttachmentError;
+	QueueStore: typeof QueueStore;
 };
 
 export default senderwolf;

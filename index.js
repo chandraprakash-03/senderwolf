@@ -1,5 +1,5 @@
 // Main email sending function
-export { sendEmail, closeAllPools, getPoolStats } from './lib/sendEmail.js';
+export { sendEmail, closeAllPools, getPoolStats, coreSend } from './lib/sendEmail.js';
 
 // Simple API for easier usage
 export {
@@ -63,6 +63,9 @@ export { signMessage, validateDKIMConfig } from './lib/dkim.js';
 
 // ICS / Calendar utilities
 export { generateICS, validateCalendarEvent, formatICSDate } from './lib/ics.js';
+
+// Queue Interface
+export { QueueStore } from './lib/queueStore.js';
 
 // Custom error classes
 export {
