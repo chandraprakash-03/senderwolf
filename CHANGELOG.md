@@ -2,9 +2,13 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
-## [4.0.0] - 2026-03-31
+## [4.1.0] - 2026-04-07
 
 ### ✨ What's New
+
+- **🦕 Deno Compatibility** - Native support for Deno with `node:` prefix imports, `deno.json` configuration, and `mod.js` entry point.
+
+## [4.0.0] - 2026-03-30
 
 - **🎨 Automatic CSS Inlining** - Robust CSS-to-inline-styles transformation using `juice`. Set `inlineCSS: true` to automatically move your `<style>` block rules into element `style` attributes.
 - **🛡️ SMTP Circuit Breakers** - Built-in resilience. Automatically "opens" the circuit after 5 consecutive failures, failing fast for subsequent requests.

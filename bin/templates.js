@@ -8,9 +8,9 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { readFile, writeFile, mkdir } from 'fs/promises';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // Import template system
 import {
@@ -297,7 +297,7 @@ program
     .description('Load template(s) from file or directory')
     .action(async (path) => {
         try {
-            const stat = await import('fs/promises').then(fs => fs.stat(path));
+            const stat = await import('node:fs/promises').then(fs => fs.stat(path));
 
             if (stat.isDirectory()) {
                 const templates = await loadTemplatesFromDirectory(path);

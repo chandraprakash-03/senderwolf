@@ -7,6 +7,10 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v4.1.0
+
+- **🦕 Deno Compatibility** - Native support for Deno with `node:` prefix imports, `deno.json` configuration, and `mod.js` entry point.
+
 ## What's New in v4.0.0
 
 - **🎨 Automatic CSS Inlining** - Robust CSS-to-inline-styles transformation using `juice`. Set `inlineCSS: true` to automatically move your `<style>` block rules into element `style` attributes.
@@ -62,6 +66,20 @@
 ```bash
 npm install senderwolf
 ```
+
+### 🦕 Deno
+
+Senderwolf is now natively compatible with Deno.
+
+```js
+import { sendEmail } from "npm:senderwolf";
+// Or directly from the repository
+import { sendEmail } from "./mod.js";
+```
+
+**Permissions Required:**
+Ensure you run Deno with the following flags:
+`deno run --allow-net --allow-read --allow-env your_script.js`
 
 **TypeScript users**: Type definitions are included automatically!
 

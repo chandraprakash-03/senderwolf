@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import chalk from "chalk";
-import fs from "fs";
+import fs from "node:fs";
 import inquirer from "inquirer";
 import { sendEmail } from "../lib/sendEmail.js";
 import { loadConfig } from "../lib/config.js";

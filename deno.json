@@ -1,0 +1,20 @@
+{
+  "name": "senderwolf",
+  "version": "4.0.0",
+  "exports": "./index.js",
+  "imports": {
+    "chalk": "npm:chalk@^5.4.1",
+    "commander": "npm:commander@^14.0.0",
+    "cosmiconfig": "npm:cosmiconfig@^9.0.0",
+    "inquirer": "npm:inquirer@^12.9.0",
+    "juice": "npm:juice@^11.1.1",
+    "zod": "npm:zod@^3.22.2"
+  },
+  "compilerOptions": {
+    "allowJs": true,
+    "lib": ["deno.ns", "deno.window", "dom"]
+  },
+  "tasks": {
+    "test": "deno test --allow-net --allow-read --allow-env examples.js"
+  }
+}
