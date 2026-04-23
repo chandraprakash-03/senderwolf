@@ -58,6 +58,9 @@ export { withRetry, DEFAULT_RETRY_OPTIONS } from './lib/retry.js';
 // HTML to plain text utility
 export { htmlToText } from './lib/htmlToText.js';
 
+// Domain and MX validation
+export { verifyMX, validateRecipientsMX } from './lib/validator.js';
+
 // DKIM signing utilities
 export { signMessage, validateDKIMConfig } from './lib/dkim.js';
 

@@ -375,6 +375,8 @@ export interface MailConfig {
 	messageId?: string;
 	/** Attach a calendar invite (ICS) to this email */
 	calendar?: CalendarEvent;
+	/** Verify recipient domain MX records before sending */
+	verifyDomain?: boolean;
 }
 
 // ============================================================================
@@ -797,6 +799,28 @@ export const DEFAULT_RETRY_OPTIONS: Required<Omit<RetryConfig, 'shouldRetry' | '
  * Convert HTML string to plain text (zero-dependency)
  */
 export function htmlToText(html: string): string;
+
+// ============================================================================
+// Domain and MX Validation Functions
+// ============================================================================
+
+export interface MXResult {
+	valid: boolean;
+	records?: { exchange: string; priority: number }[];
+	domain: string;
+	error?: string;
+	fallback?: boolean;
+}
+
+/**
+ * Verify a domain or email address for MX records
+ */
+export function verifyMX(emailOrDomain: string): Promise<MXResult>;
+
+/**
+ * Verify multiple email addresses for MX records
+ */
+export function validateRecipientsMX(emails: string | string[]): Promise<MXResult[]>;
 
 // ============================================================================
 // DKIM Utility Functions

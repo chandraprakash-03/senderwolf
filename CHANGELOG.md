@@ -2,6 +2,16 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [4.2.0] - 2026-04-23
+ 
+### ✨ What's New
+ 
+- **🔍 Recipient Domain MX Validation** - Built-in verification for recipient email domains.
+  - Automatically checks for MX records to prevent bounces and protect sender reputation.
+  - Supports RFC 5321-compliant fallback to A/AAAA records if MX records are absent.
+  - Enable globally or per-email using `verifyDomain: true`.
+  - New exports: `verifyMX()` and `validateRecipientsMX()` for manual validation.
+ 
 ## [4.1.0] - 2026-04-07
 
 ### ✨ What's New

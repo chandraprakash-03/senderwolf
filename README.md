@@ -7,9 +7,10 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
-## What's New in v4.1.0
-
-- **🦕 Deno Compatibility** - Native support for Deno with `node:` prefix imports, `deno.json` configuration, and `mod.js` entry point.
+## What's New in v4.2.0
+ 
+- **🔍 Recipient Domain MX Validation** - Built-in verification for recipient email domains. Automatically checks for MX records to prevent bounces and protect your sender reputation. Set `verifyDomain: true` to enable.
+- **🦕 Deno Compatibility (v4.1.0)** - Native support for Deno with `node:` prefix imports.
 
 ## What's New in v4.0.0
 
@@ -455,6 +456,21 @@ await sendEmail({
   delay: "5m", // wait 5 minutes
   // OR
   sendAt: "1h" // schedule for 1 hour from now
+});
+```
+
+#### **Recipient Domain Validation (MX Check)**
+Verify that your recipient's domain is actually capable of receiving mail before you send. This prevents "hard bounces" and protects your sender reputation.
+
+```js
+await sendEmail({
+  smtp: { /* ... */ },
+  mail: {
+    to: "user@example.com",
+    subject: "Verified Delivery",
+    html: "<h1>This domain has valid MX records</h1>",
+    verifyDomain: true // 🔍 Performs MX lookup before sending
+  }
 });
 ```
 
