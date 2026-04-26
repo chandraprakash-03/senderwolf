@@ -2,6 +2,22 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [4.3.0] - 2026-04-26
+
+### ✨ What's New
+
+- **🔄 Smart Failover Transports** - Support for secondary SMTP configurations. If the primary transport fails (after its configured retries), Senderwolf automatically attempts to send via the `failover` array of transports.
+- **📊 A/B Testing Support** - Native support for rotating subject lines. Provide a `subjects` array, and Senderwolf will randomly select one for the email. Includes a new `mailer.sendAB()` convenience method.
+- **🌐 SMTP Proxy Support** - Built-in support for tunneling SMTP connections through **SOCKS5** and **HTTP CONNECT** proxies. Zero external dependencies, using raw Node.js sockets.
+- **🔍 Improved MX Validation** - Enhanced recipient domain verification with better error handling and integration into the core sending pipeline.
+
+### 🔧 Improvements & Fixes
+- Added `ProxyConfig` and `MXResult` to TypeScript definitions.
+- Enhanced `sendEmail` results to include the active `transport` used (e.g., `primary`, `failover-1`).
+- Updated internal `coreSend` to handle dev-mode interception across all transport types.
+
+---
+
 ## [4.2.0] - 2026-04-23
  
 ### ✨ What's New

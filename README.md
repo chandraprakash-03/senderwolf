@@ -7,10 +7,17 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v4.3.0
+
+- **🔄 Smart Failover Transports** - Support for secondary SMTP configurations. If your primary transport fails, Senderwolf automatically falls back to your `failover` array.
+- **📊 A/B Testing Support** - Native subject line rotation. Provide an array of `subjects` and Senderwolf will pick one randomly for each email.
+- **🌐 SMTP Proxy Support** - Tunnel your SMTP connections through **SOCKS5** or **HTTP CONNECT** proxies with zero external dependencies.
+
+---
+
 ## What's New in v4.2.0
  
 - **🔍 Recipient Domain MX Validation** - Built-in verification for recipient email domains. Automatically checks for MX records to prevent bounces and protect your sender reputation. Set `verifyDomain: true` to enable.
-- **🦕 Deno Compatibility (v4.1.0)** - Native support for Deno with `node:` prefix imports.
 
 ## What's New in v4.0.0
 
@@ -36,6 +43,9 @@
 - **Retry with exponential backoff** - Automatic retry for transient SMTP failures
 - **Event system & hooks** - Lifecycle events for sending, sent, failed, retrying
 - **Zero SMTP dependencies** - Pure Node.js implementation
+- **🔄 Smart Failover** - Multi-transport fallback and recovery
+- **📊 A/B Testing** - Native subject line rotation and split-testing
+- **🌐 SMTP Proxies** - SOCKS5 and HTTP CONNECT proxy support
 - **Modern authentication** - OAuth2, XOAUTH2, and traditional methods
 - **Extensible architecture** - Add any SMTP provider instantly
 - **Full email features** - CC/BCC, attachments, custom headers, priority
@@ -473,6 +483,74 @@ await sendEmail({
   }
 });
 ```
+
+#### **Smart Failover Transports**
+Ensure maximum deliverability by providing backup SMTP providers. If the primary transport fails after its retry attempts, Senderwolf will automatically cycle through your `failover` list.
+
+```js
+await sendEmail({
+  smtp: {
+    host: "primary.smtp.com",
+    auth: { user: "u", pass: "p" },
+    connectionTimeout: 5000
+  },
+  failover: [
+    { host: "backup-1.smtp.com", auth: { user: "u", pass: "p" } },
+    { host: "backup-2.smtp.com", auth: { user: "u", pass: "p" } }
+  ],
+  mail: {
+    to: "user@example.com",
+    subject: "Resilient Email",
+    text: "This email will find a way."
+  }
+});
+```
+
+#### **A/B Testing (Subject Rotation)**
+Native split-testing for subject lines. You can pass an array of subjects, or use the high-level `sendAB` method on the Mailer instance.
+
+```js
+// Option 1: Via sendEmail
+await sendEmail({
+  smtp: { /* ... */ },
+  mail: {
+    to: "user@example.com",
+    subjects: ["Subject Variant A", "Subject Variant B", "Subject Variant C"],
+    html: "<h1>Test your engagement!</h1>"
+  }
+});
+
+// Option 2: Via Mailer convenience method
+const mailer = createMailer({ smtp: { /* ... */ } });
+await mailer.sendAB(
+  "user@example.com", 
+  ["Buy Now!", "Limited Offer!", "Free Gift Inside!"],
+  "<h1>Check out our sale</h1>"
+);
+```
+
+#### **SMTP Proxy Support**
+Connect to SMTP servers through SOCKS5 or HTTP proxies. This is essential for enterprise environments with strict outbound rules or when you need to mask your sending IP.
+
+```js
+await sendEmail({
+  smtp: {
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: { user: "...", pass: "..." },
+    proxy: {
+      host: "1.2.3.4",
+      port: 1080,
+      type: "socks5", // 'socks5' (default), 'socks4', or 'http'
+      auth: { user: "proxy-user", pass: "proxy-pass" } // Optional
+    }
+  },
+  mail: { /* ... */ }
+});
+```
+
+---
 
 ---
 
