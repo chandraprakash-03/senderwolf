@@ -7,6 +7,14 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v4.3.1
+
+- **🛡️ Security Hardening** - Comprehensive security audit fixes including RFC 5321 dot-stuffing, SMTP injection protection, prototype pollution guards, and attachment path validation.
+- **⚡ Performance Optimizations** - Optimized MIME assembly for large attachments and implemented concurrency batching for bulk sends.
+- **🔧 Stability Improvements** - Fixed connection pool race conditions, idle timer leaks, and improved configuration caching.
+
+---
+
 ## What's New in v4.3.0
 
 - **🔄 Smart Failover Transports** - Support for secondary SMTP configurations. If your primary transport fails, Senderwolf automatically falls back to your `failover` array.

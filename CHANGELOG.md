@@ -2,6 +2,28 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [4.3.1] - 2026-04-26
+
+### 🛡️ Security Hardening
+- **RFC 5321 Dot-Stuffing** - Implemented transparent dot-stuffing in the SMTP DATA stream to prevent message truncation and protocol desync.
+- **Injection Protection** - Added strict sanitization for SMTP envelope commands (`MAIL FROM`, `RCPT TO`) and custom headers to prevent protocol injection.
+- **Prototype Pollution Guard** - Secured template variable resolution and configuration loading against prototype pollution attacks.
+- **Path Traversal Protection** - Added validation for attachment paths to prevent arbitrary file reads.
+- **Dev Server Security** - Bound the local preview server to `127.0.0.1`, added CSP sandboxing for HTML previews, and fixed a memory leak by capping stored emails to 100.
+
+### 🔧 Bug Fixes & Stability
+- **Pool Reliability** - Fixed `activeConnections` counter underflow and idle timer leaks in the connection pool.
+- **Config Management** - Implemented non-mutating config caching and fixed provider/domain re-registration side-effects.
+- **Protocol Reliability** - Added mandatory timeouts to all SMTP response reads to prevent indefinite hangs.
+- **Date Handling** - Fixed support for ISO 8601 date strings in the `sendAt` scheduling field.
+- **Proxy Fixes** - Fixed missing UTF-8 encoding on upgraded TLS sockets when using proxies.
+
+### ⚡ Performance
+- **Optimized MIME Assembly** - Switched from string concatenation to array-based joining for building large email bodies, reducing GC pressure and memory usage.
+- **Bulk Concurrency Control** - Implemented default concurrency batching (10) for `sendBulk` and `sendBulkTemplate` to prevent pool exhaustion.
+
+---
+
 ## [4.3.0] - 2026-04-26
 
 ### ✨ What's New

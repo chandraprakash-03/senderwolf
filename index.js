@@ -33,7 +33,7 @@ export {
 } from './lib/providers.js';
 
 // Configuration utilities
-export { loadConfig } from './lib/config.js';
+export { loadConfig, clearConfigCache } from './lib/config.js';
 
 // Template system
 export {

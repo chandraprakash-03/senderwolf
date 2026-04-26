@@ -233,11 +233,19 @@ export interface RetryingEvent {
 	timestamp: number;
 }
 
+export interface QueuedEvent {
+	to: EmailRecipients;
+	subject: string;
+	queueJobId: string | number;
+	timestamp: number;
+}
+
 export type SenderwolfEventMap = {
 	sending: SendingEvent;
 	sent: SentEvent;
 	failed: FailedEvent;
 	retrying: RetryingEvent;
+	queued: QueuedEvent;
 };
 
 export type SenderwolfEventName = keyof SenderwolfEventMap;
@@ -285,6 +293,8 @@ export interface SMTPConfig {
 	logger?: any;
 	/** Proxy configuration for SMTP connection */
 	proxy?: ProxyConfig;
+	/** Enable dev mode (intercept emails and show in local preview server) */
+	dev?: boolean;
 }
 
 export interface ProxyConfig {
@@ -363,8 +373,8 @@ export interface MailConfig {
 	bcc?: EmailRecipients;
 	/** Reply-to email address */
 	replyTo?: EmailRecipient;
-	/** Email subject */
-	subject: string;
+	/** Email subject (optional when using subjects[] for A/B testing) */
+	subject?: string;
 	/** HTML email content */
 	html?: string;
 	/** Plain text email content */
@@ -385,17 +395,45 @@ export interface MailConfig {
 	date?: Date;
 	/** Custom message ID */
 	messageId?: string;
+	/** AMP HTML content for interactive emails */
+	amp?: string;
+	/** DSN (Delivery Status Notification) options */
+	dsn?: {
+		return?: 'full' | 'headers';
+		id?: string;
+		notify?: string | string[];
+		recipient?: string;
+	};
 	/** Attach a calendar invite (ICS) to this email */
 	calendar?: CalendarEvent;
 	/** Verify recipient domain MX records before sending */
 	verifyDomain?: boolean;
 	/** Multiple subjects for A/B testing */
 	subjects?: string[];
+	/** Automatically inline CSS from <style> blocks */
+	inlineCSS?: boolean;
+	/** Minify HTML content */
+	minify?: boolean;
+	/** BIMI (Brand Indicators for Message Identification) config */
+	bimi?: {
+		location: string;
+		selector?: string;
+	};
+	/** DMARC filter header config */
+	dmarc?: {
+		policy?: 'none' | 'quarantine' | 'reject';
+		report?: boolean;
+	};
 }
 
 // ============================================================================
 // Main Configuration Types
 // ============================================================================
+
+export interface QueueConfig {
+	/** Queue store implementation (e.g. LocalQueueStore from @senderwolf/plugin-queue-local) */
+	store: QueueStore;
+}
 
 export interface SendEmailConfig {
 	smtp?: SMTPConfig;
@@ -404,10 +442,12 @@ export interface SendEmailConfig {
 	retry?: RetryConfig;
 	/** Schedule email to be sent at a specific time */
 	sendAt?: Date | string;
-	/** Delay email sending by specified milliseconds */
-	delay?: number;
+	/** Delay email sending by specified milliseconds or duration string (e.g. '5m') */
+	delay?: number | string;
 	/** Failover SMTP configurations */
 	failover?: SMTPConfig[];
+	/** Queue configuration for persistent email queuing */
+	queue?: QueueConfig;
 }
 
 export interface MailerDefaults {
@@ -435,6 +475,16 @@ export interface SendEmailResult {
 	error?: string;
 	/** Number of attempts made (1 = no retries) */
 	attempts?: number;
+	/** Whether the email was scheduled for later delivery */
+	scheduled?: boolean;
+	/** Which transport was used: 'primary' or 'failover-N' */
+	transport?: string;
+	/** Whether the email was queued rather than sent immediately */
+	queued?: boolean;
+	/** Job ID if the email was queued */
+	queueJobId?: string | number;
+	/** Zod validation issues (present when validation fails) */
+	issues?: any[];
 }
 
 export interface BulkSendResult {
