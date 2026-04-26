@@ -283,6 +283,18 @@ export interface SMTPConfig {
 	dkim?: DKIMConfig;
 	/** Custom logger instance (must implement info, warn, error, debug) */
 	logger?: any;
+	/** Proxy configuration for SMTP connection */
+	proxy?: ProxyConfig;
+}
+
+export interface ProxyConfig {
+	host: string;
+	port: number;
+	type?: 'socks5' | 'socks4' | 'http';
+	auth?: {
+		user: string;
+		pass: string;
+	};
 }
 
 // ============================================================================
@@ -377,6 +389,8 @@ export interface MailConfig {
 	calendar?: CalendarEvent;
 	/** Verify recipient domain MX records before sending */
 	verifyDomain?: boolean;
+	/** Multiple subjects for A/B testing */
+	subjects?: string[];
 }
 
 // ============================================================================
@@ -392,6 +406,8 @@ export interface SendEmailConfig {
 	sendAt?: Date | string;
 	/** Delay email sending by specified milliseconds */
 	delay?: number;
+	/** Failover SMTP configurations */
+	failover?: SMTPConfig[];
 }
 
 export interface MailerDefaults {
@@ -524,6 +540,16 @@ export interface Mailer {
 		subject: string,
 		content: string,
 		attachments: Attachment[],
+		options?: Partial<MailConfig>
+	): Promise<SendEmailResult>;
+
+	/**
+	 * Send A/B testing email with multiple subject lines
+	 */
+	sendAB(
+		to: EmailRecipients,
+		subjects: string[],
+		content: string,
 		options?: Partial<MailConfig>
 	): Promise<SendEmailResult>;
 
