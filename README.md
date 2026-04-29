@@ -7,6 +7,13 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v4.3.2
+
+- **🛡️ Security & Reliability Hardening** - Opportunistic STARTTLS automatically upgrades plain connections if supported, and strict CRLF sanitization prevents SMTP header injection across all fields. Envelope sender generation is now robustly stripped of display formatting.
+- **⚡ Performance & Memory** - Native Attachment Streaming directly pipes files to the network with real-time base64 encoding (when DKIM is disabled), drastically reducing memory usage. Connection pooling tracks internal state via pure Sets to completely eliminate resource collisions.
+
+---
+
 ## What's New in v4.3.1
 
 - **🛡️ Security Hardening** - Comprehensive security audit fixes including RFC 5321 dot-stuffing, SMTP injection protection, prototype pollution guards, and attachment path validation.

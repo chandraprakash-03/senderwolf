@@ -2,6 +2,21 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [4.3.2] - 2026-04-29
+
+### 🛡️ Security & Reliability Hardening
+- **Opportunistic STARTTLS** - The client now automatically prefers and upgrades to STARTTLS if the server supports it, even if `requireTLS` is disabled, drastically improving default security.
+- **Header CRLF Injection Prevention** - Enhanced strict sanitization across all standard header fields (`Subject`, `Message-ID`, `From`, `To`, `Cc`, `Reply-To`) to completely mitigate SMTP header injection attacks.
+- **Envelope Sender Correctness** - The `MAIL FROM:` SMTP envelope explicitly uses pure email addresses (stripping display names) to prevent envelope validation rejection by strict SMTP relays.
+- **Queue Draining Fix** - The pool queue now properly replays waiting requests against idle connections instead of indefinitely stalling under high concurrency limits.
+
+### ⚡ Performance & Memory
+- **Native Attachment Streaming** - Attachments can now be efficiently streamed directly to the SMTP socket with real-time base64 encoding, massively reducing memory pressure for large payloads (automatically active when DKIM is disabled).
+- **Optimized Pool Tracking** - Refactored internal `activeConnections` to use native `Set` collections preventing key collisions under high concurrency and fixing an edge-case counter underflow on connection failures.
+- **Accurate Statistics** - Fixed an issue where `messagesSent` in pool stats was exposed but never incremented.
+
+---
+
 ## [4.3.1] - 2026-04-26
 
 ### 🛡️ Security Hardening
