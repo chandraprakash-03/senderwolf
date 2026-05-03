@@ -2,6 +2,20 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [4.3.3] - 2026-05-03
+
+### ✨ New Features
+- **Dry Run Mode** - Added `dryRun: true` flag to `mail` options. This allows developers to process the entire email pipeline (CSS inlining, minification, A/B testing, attachment resolution) and inspect the final `mailOptions` without performing actual SMTP delivery.
+- **CID Auto-linking** - Attachments with a `cid` now automatically default to `disposition: inline`, making it easier to embed images without manual header configuration.
+- **RFC-Compliant Message-ID** - The client now auto-generates unique, RFC 5322-compliant Message-IDs if none are provided, improving deliverability and tracking across different SMTP providers.
+
+### 🔧 Improvements & Hardening
+- **Multiple Reply-To Support** - Enhanced `replyTo` field to support arrays of email addresses or comma-separated strings, matching standard recipient field behavior.
+- **Attachment Filename Sanitation** - Added strict sanitation for attachment filenames to strip illegal or unsafe characters (`"`, `<`, `>`, `|`, etc.) that could cause rejection by strict SMTP relays.
+- **Event Listener Cleanup** - Added `mailer.removeAllListeners(event)` to the Mailer instance, allowing for better resource management in long-running applications and test suites.
+
+---
+
 ## [4.3.2] - 2026-04-29
 
 ### 🛡️ Security & Reliability Hardening

@@ -131,6 +131,8 @@ export interface FileAttachment {
 	contentType?: string;
 	/** Content-ID for inline images (e.g. 'logo-1') */
 	cid?: string;
+	/** Attachment disposition (default: 'attachment', or 'inline' if cid is present) */
+	disposition?: 'attachment' | 'inline';
 }
 
 export interface BufferAttachment {
@@ -140,13 +142,18 @@ export interface BufferAttachment {
 	encoding?: string;
 	/** Content-ID for inline images (e.g. 'logo-1') */
 	cid?: string;
+	/** Attachment disposition (default: 'attachment', or 'inline' if cid is present) */
+	disposition?: 'attachment' | 'inline';
 }
 
 export interface StreamAttachment {
 	filename: string;
 	content: Readable;
 	contentType?: string;
+	/** Attachment disposition (default: 'attachment') */
+	disposition?: 'attachment' | 'inline';
 }
+
 
 export type Attachment = FileAttachment | BufferAttachment | StreamAttachment;
 
@@ -371,8 +378,8 @@ export interface MailConfig {
 	cc?: EmailRecipients;
 	/** BCC recipient email address(es) */
 	bcc?: EmailRecipients;
-	/** Reply-to email address */
-	replyTo?: EmailRecipient;
+	/** Reply-to email address(es) */
+	replyTo?: EmailRecipient | string[];
 	/** Email subject (optional when using subjects[] for A/B testing) */
 	subject?: string;
 	/** HTML email content */
@@ -424,6 +431,8 @@ export interface MailConfig {
 		policy?: 'none' | 'quarantine' | 'reject';
 		report?: boolean;
 	};
+	/** Enable dry run mode (process email without sending) */
+	dryRun?: boolean;
 }
 
 // ============================================================================
@@ -485,6 +494,10 @@ export interface SendEmailResult {
 	queueJobId?: string | number;
 	/** Zod validation issues (present when validation fails) */
 	issues?: any[];
+	/** Whether the send was a dry run */
+	dryRun?: boolean;
+	/** Final processed mail options (returned in dry run mode) */
+	mailOptions?: MailConfig;
 }
 
 export interface BulkSendResult {
@@ -674,6 +687,11 @@ export interface Mailer {
 		event: E,
 		listener: (data: SenderwolfEventMap[E]) => void
 	): Mailer;
+
+	/**
+	 * Remove all event listeners for a specific event
+	 */
+	removeAllListeners(event: SenderwolfEventName): Mailer;
 }
 
 // ============================================================================

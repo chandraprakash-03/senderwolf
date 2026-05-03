@@ -7,6 +7,14 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v4.3.3
+
+- **🧪 Dry Run Mode** - Test your entire email pipeline without hitting the network. Set `dryRun: true` in your mail options to get the final rendered `mailOptions` including inlined CSS, minified HTML, and sanitized attachments.
+- **🛡️ Protocol Compliance** - RFC-compliant `Message-ID` generation, support for multiple `replyTo` addresses, and automated CID auto-linking for simpler inline attachments.
+- **🧹 Memory & Stability** - Built-in event listener cleanup with `mailer.removeAllListeners()` and robust attachment filename sanitation to prevent SMTP relay rejections.
+
+---
+
 ## What's New in v4.3.2
 
 - **🛡️ Security & Reliability Hardening** - Opportunistic STARTTLS automatically upgrades plain connections if supported, and strict CRLF sanitization prevents SMTP header injection across all fields. Envelope sender generation is now robustly stripped of display formatting.
