@@ -2,6 +2,15 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [4.4.0] - 2026-06-06
+
+### ✨ New Features
+- **Middleware Pipeline** - Added `mailer.use(step, handler)` functionality. Middlewares act identically to `nodemailer` payload plugins, letting you intercept and dynamically mutate email data before dispatch.
+- **Message Compilation (`compile: true`)** - Added support for retrieving raw MIME (`.eml`) strings without opening network sockets.
+- **URL Attachments** - You can now attach remote files using `{ url: "https://..." }` directly in the `attachments` array. The library automatically fetches and buffers the payload asynchronously before passing it to the core SMTP engine.
+
+---
+
 ## [4.3.3] - 2026-05-03
 
 ### ✨ New Features

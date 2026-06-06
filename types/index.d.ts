@@ -154,8 +154,16 @@ export interface StreamAttachment {
 	disposition?: 'attachment' | 'inline';
 }
 
+export interface URLAttachment {
+	filename?: string;
+	url?: string;
+	href?: string;
+	contentType?: string;
+	cid?: string;
+	disposition?: 'attachment' | 'inline';
+}
 
-export type Attachment = FileAttachment | BufferAttachment | StreamAttachment;
+export type Attachment = FileAttachment | BufferAttachment | StreamAttachment | URLAttachment;
 
 // ============================================================================
 // Connection Pool Types
@@ -433,6 +441,8 @@ export interface MailConfig {
 	};
 	/** Enable dry run mode (process email without sending) */
 	dryRun?: boolean;
+	/** Return the raw MIME string instead of sending */
+	compile?: boolean;
 }
 
 // ============================================================================
@@ -692,6 +702,11 @@ export interface Mailer {
 	 * Remove all event listeners for a specific event
 	 */
 	removeAllListeners(event: SenderwolfEventName): Mailer;
+
+	/**
+	 * Add a middleware function to a specific step
+	 */
+	use(step: string, handler: (mail: any, next: (err?: Error) => void) => void): Mailer;
 }
 
 // ============================================================================

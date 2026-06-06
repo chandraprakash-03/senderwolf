@@ -7,6 +7,14 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v4.4.0
+
+- **🔌 Middleware Pipeline (`.use()`)** - Hook into email lifecycle stages (e.g. `compile`) to intercept and mutate payloads dynamically just like `nodemailer` plugins.
+- **📦 Message Compilation (`compile: true`)** - Generate and retrieve fully-formed MIME (`.eml`) strings without opening any network sockets.
+- **🔗 URL Attachments** - Directly attach remote files using `{ url: "https://..." }`. The library will automatically fetch and buffer the payload on-the-fly.
+
+---
+
 ## What's New in v4.3.3
 
 - **🧪 Dry Run Mode** - Test your entire email pipeline without hitting the network. Set `dryRun: true` in your mail options to get the final rendered `mailOptions` including inlined CSS, minified HTML, and sanitized attachments.
@@ -61,14 +69,17 @@
 
 - **One-liner email sending** - Send emails with a single function call
 - **High-performance connection pooling** - 50-80% faster bulk email sending
+- **Middleware pipeline** - Mutate emails on the fly with `.use()` plugins
+- **Message compilation** - Generate raw MIME `.eml` strings instantly
+- **URL attachments** - Fetch and attach remote URLs dynamically
 - **Auto-provider detection** - Just provide your email, we handle the rest
 - **Built-in provider presets** - 13+ popular email services ready to use
 - **Retry with exponential backoff** - Automatic retry for transient SMTP failures
 - **Event system & hooks** - Lifecycle events for sending, sent, failed, retrying
 - **Zero SMTP dependencies** - Pure Node.js implementation
-- **🔄 Smart Failover** - Multi-transport fallback and recovery
-- **📊 A/B Testing** - Native subject line rotation and split-testing
-- **🌐 SMTP Proxies** - SOCKS5 and HTTP CONNECT proxy support
+- **Smart Failover** - Multi-transport fallback and recovery
+- **A/B Testing** - Native subject line rotation and split-testing
+- **SMTP Proxies** - SOCKS5 and HTTP CONNECT proxy support
 - **Modern authentication** - OAuth2, XOAUTH2, and traditional methods
 - **Extensible architecture** - Add any SMTP provider instantly
 - **Full email features** - CC/BCC, attachments, custom headers, priority
@@ -83,10 +94,10 @@
 - **Calendar invites (ICS)** - Generate and send RFC 5545 calendar events natively
 - **DSN Support** - Detailed delivery status notifications and tracking
 - **AMP Email** - Send interactive, dynamic emails
-- **🎨 CSS Inlining** - Move `<style>` rules into `style` attributes automatically
-- **✂️ HTML Minification** - Collapse whitespace and strip comments from email bodies
-- **🛡️ SMTP Circuit Breaker** - Prevent resource exhaustion with built-in fail-fast logic
-- **🏷️ BIMI & DMARC** - Native support for premium deliverability headers
+- **CSS Inlining** - Move `<style>` rules into `style` attributes automatically
+- **HTML Minification** - Collapse whitespace and strip comments from email bodies
+- **SMTP Circuit Breaker** - Prevent resource exhaustion with built-in fail-fast logic
+- **BIMI & DMARC** - Native support for premium deliverability headers
 - **Template system** - 4 built-in templates with variable substitution
 - **CLI tools** - Complete command-line interface for email and template management
 - **TypeScript support** - Complete type definitions with IntelliSense
