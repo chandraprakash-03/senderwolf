@@ -7,6 +7,12 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v4.5.0
+
+- **⚛️ Native React & Vue Email Support** - Pass your components directly to the `react` or `vue` properties in your mail options. Senderwolf will automatically compile them into HTML and plain-text strings on the fly!
+
+---
+
 ## What's New in v4.4.0
 
 - **🔌 Middleware Pipeline (`.use()`)** - Hook into email lifecycle stages (e.g. `compile`) to intercept and mutate payloads dynamically just like `nodemailer` plugins.
@@ -67,6 +73,7 @@
 
 ##  Key Features
 
+- **Native React & Vue Email** - Directly pass React and Vue components to render emails dynamically
 - **One-liner email sending** - Send emails with a single function call
 - **High-performance connection pooling** - 50-80% faster bulk email sending
 - **Middleware pipeline** - Mutate emails on the fly with `.use()` plugins
