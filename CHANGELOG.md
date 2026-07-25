@@ -2,6 +2,16 @@
 
 All notable changes to Senderwolf will be documented in this file.
 
+## [4.6.0] - 2026-07-25
+
+### ✨ New Features (Nodemailer Parity Update)
+- **🔐 S/MIME Encryption & Signing** - Full support for PKCS#7 S/MIME formatting via `node-forge`. Sign and encrypt your emails natively.
+- **🛠️ Templating Engines** - Direct integration for `pug`, `ejs`, and `handlebars`. Just pass your template file path and variables inside `mailOptions`.
+- **🚚 Alternative Transports** - Bypass SMTP networking entirely with `stream` and `json` transports. Ideal for capturing raw MIME assemblies or testing.
+- **🌍 SMTPUTF8 & List Headers** - Built-in support for internationalized domains via automatic Punycode conversion. First-class support for `List-Unsubscribe` and other `List-*` headers.
+
+---
+
 ## [4.4.0] - 2026-06-06
 
 ### ✨ New Features

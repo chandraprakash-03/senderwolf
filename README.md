@@ -7,6 +7,15 @@
 
 **Senderwolf** makes email sending **ridiculously simple**. Built from the ground up with an intuitive API, automatic provider detection, built-in connection pooling, and zero configuration for popular email services.
 
+## What's New in v4.6.0 (Nodemailer Parity Update)
+
+- **🔐 S/MIME Encryption & Signing** - Full support for PKCS#7 S/MIME formatting via `node-forge`. Sign and encrypt your emails natively.
+- **🛠️ Templating Engines** - Direct integration for `pug`, `ejs`, and `handlebars`. Just pass your template file path and variables inside `mailOptions`.
+- **🚚 Alternative Transports** - Bypass SMTP networking entirely with `stream` and `json` transports.
+- **🌍 SMTPUTF8 & List Headers** - Built-in support for internationalized domains via automatic Punycode conversion. First-class support for `List-*` headers like `List-Unsubscribe`.
+
+---
+
 ## What's New in v4.5.0
 
 - **⚛️ Native React & Vue Email Support** - Pass your components directly to the `react` or `vue` properties in your mail options. Senderwolf will automatically compile them into HTML and plain-text strings on the fly!
@@ -74,6 +83,9 @@
 ##  Key Features
 
 - **Native React & Vue Email** - Directly pass React and Vue components to render emails dynamically
+- **Pug, EJS, & Handlebars** - Direct integration for popular templating engines
+- **S/MIME Encryption & Signing** - Secure your emails natively using `node-forge`
+- **Alternative Transports** - Output to streams or JSON to bypass networking
 - **One-liner email sending** - Send emails with a single function call
 - **High-performance connection pooling** - 50-80% faster bulk email sending
 - **Middleware pipeline** - Mutate emails on the fly with `.use()` plugins
